@@ -1,10 +1,44 @@
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
-import { sql, relations } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
+
+// Users table
+export const users = sqliteTable('users', {
+	id: integer('id').primaryKey({ autoIncrement: true }),
+	githubUserId: text('github_user_id').notNull().unique(),
+	username: text('username').notNull()
+		.unique(),
+	email: text('email').notNull()
+		.unique(),
+	createdAt: integer('created_at', { mode: 'timestamp' })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: integer('updated_at', { mode: 'timestamp' })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`)
+});
+
+// Projects table
+export const projects = sqliteTable('projects', {
+	id: integer('id').primaryKey({ autoIncrement: true }),
+	userId: integer('user_id')
+		.notNull()
+		.references(() => users.id),
+	name: text('name').notNull(),
+	description: text('description'),
+	createdAt: integer('created_at', { mode: 'timestamp' })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: integer('updated_at', { mode: 'timestamp' })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`)
+});
 
 // Websites table
 export const websites = sqliteTable('websites', {
 	id: integer('id').primaryKey({ autoIncrement: true }),
-	githubUserId: text('github_user_id').notNull(), // GitHub User ID as text
+	projectId: integer('project_id')
+		.notNull()
+		.references(() => projects.id),
 	url: text('url').notNull(),
 	name: text('name').notNull(),
 	checkInterval: integer('check_interval').notNull().default(300), // in seconds
@@ -48,7 +82,26 @@ export const alerts = sqliteTable('alerts', {
 		.default(sql`CURRENT_TIMESTAMP`)
 });
 
-export const websitesRelations = relations(websites, ({ many }) => ({
+// Relations
+import { relations } from 'drizzle-orm';
+
+export const usersRelations = relations(users, ({ many }) => ({
+	projects: many(projects)
+}));
+
+export const projectsRelations = relations(projects, ({ one, many }) => ({
+	user: one(users, {
+		fields: [projects.userId],
+		references: [users.id]
+	}),
+	websites: many(websites)
+}));
+
+export const websitesRelations = relations(websites, ({ one, many }) => ({
+	project: one(projects, {
+		fields: [websites.projectId],
+		references: [projects.id]
+	}),
 	uptimeChecks: many(uptimeChecks),
 	alerts: many(alerts)
 }));

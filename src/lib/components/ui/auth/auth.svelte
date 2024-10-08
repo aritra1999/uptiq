@@ -7,7 +7,7 @@
 	import { page } from '$app/stores';
 </script>
 
-<div>
+<div class="flex items-center">
 	{#if $page.data.session}
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger asChild let:builder>
@@ -46,7 +46,13 @@
 		</DropdownMenu.Root>
 	{:else}
 		<Button variant="outline">
-			<SignIn />
+			<SignIn
+				options={{
+					redirectTo: $page.data.redirectTo
+						? `/${decodeURIComponent($page.data.redirectTo).slice(1)}`
+						: `/dashboard`
+				}}
+			/>
 			<GitHub class="ml-2 h-5 w-5" />
 		</Button>
 	{/if}
