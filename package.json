@@ -52,7 +52,7 @@
 		"dotenv": "^16.4.5",
 		"drizzle-orm": "^0.34.1",
 		"drizzle-zod": "^0.5.1",
-		"hono": "^4.6.4",
+		"hono": "^4.6.5",
 		"svelte-motion": "^0.12.2",
 		"tailwind-merge": "^2.5.3",
 		"tailwind-variants": "^0.2.1"
