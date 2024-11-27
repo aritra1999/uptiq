@@ -1,12 +1,11 @@
-- [x] Sidebar
+- [x] Sidebar - https://github.com/aritra1999/uptiq/pull/4
   - [x] "Feedback" banner
   - [x] "Report a bug" banner
 
-- [ ] Projects
+- [x] Projects - https://github.com/aritra1999/uptiq/pull/4
   - [x] Project list
-  - [ ] Add favicon for project
-  - [ ] Project create and update form dialog
-  - [ ] Project delete dialog
+  - [x] Project create and update form dialog
+  - [x] Project delete dialog
 
 - [ ] Status Page
   - [ ] Status list
@@ -21,3 +20,10 @@
 - [ ] Housekeeping
   - [ ] Add `maxDuration` for trigger.dev jobs
   - [ ] Add timeout for postgres connection in trigger.dev jobs
+
+- [ ] Frontend tracking using posthog
+- [ ] Backend tracing using sentry.
+  - [ ] Endpoint tracing
+  - [ ] Janitor tracing
+  - [ ] Monitor schedular tracing
+  - [ ] Monitor worker tracing
