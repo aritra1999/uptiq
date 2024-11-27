@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { ModeWatcher } from 'mode-watcher';
 	import '../app.css';
+	import '../fonts.css';
+	import { ModeWatcher } from 'mode-watcher';
 
 	let { children } = $props();
 </script>
