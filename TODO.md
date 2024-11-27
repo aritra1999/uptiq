@@ -6,9 +6,10 @@
   - [x] Project list
   - [x] Project create and update form dialog
   - [x] Project delete dialog
+  - [ ] Markdown support for project description
 
-- [ ] Status Page
-  - [ ] Status list
+- [x] Status Page
+  - [x] Status list
 
 - [ ] Sites
   - [ ] Sites list
