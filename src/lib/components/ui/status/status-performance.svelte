@@ -17,7 +17,7 @@
 	});
 </script>
 
-<div class="p-2.5">
+<div class="px-4 py-2.5">
 	<h4 class="text-xs text-muted-foreground">
 		<span class="inline-flex sm:hidden">Avg</span>
 		<span class="hidden sm:inline-flex">Average</span>

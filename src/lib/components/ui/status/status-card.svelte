@@ -8,17 +8,9 @@
 	import StatusChart from '$lib/components/ui/status/status-chart.svelte';
 	import StatusAvailability from '$lib/components/ui/status/status-availability.svelte';
 	import StatusPerformance from '$lib/components/ui/status/status-performance.svelte';
-	import StatusPing from '$lib/components/ui/status/status-ping.svelte';
 	import EllipsisVertical from 'lucide-svelte/icons/ellipsis-vertical';
+	import LoaderCircle from 'lucide-svelte/icons/loader-circle';
 	import { onMount } from 'svelte';
-
-	interface Props {
-		websiteId: string;
-		showWebsiteFormDialog: boolean;
-		showDeleteWebsiteDialog: boolean;
-		showSettings?: boolean;
-		demoStatuses?: SelectPartialStatus[];
-	}
 
 	let {
 		websiteId,
@@ -26,10 +18,9 @@
 		showDeleteWebsiteDialog = $bindable(),
 		showSettings = true,
 		demoStatuses = []
-	}: Props = $props();
+	} = $props();
 
 	let statuses: SelectPartialStatus[] = $state([]);
-
 	let loadingStatuses = $state(true);
 	let website = $derived($websiteStore && websiteId ? $websiteStore.get(websiteId) : undefined);
 
@@ -45,18 +36,10 @@
 </script>
 
 {#if website}
-	<Card.Root class="inline-block w-full p-2">
-		<div class="flex items-center justify-between gap-2 rounded bg-background p-3">
+	<Card.Root class="inline-block w-full p-4">
+		<div class="mb-4 flex items-center justify-between">
 			<div>
 				<h2 class="mr-2 text-lg font-medium">{website.name}</h2>
-				<a
-					href={website.url}
-					target="_blank"
-					class="text-xs text-muted-foreground"
-					rel="noopener noreferrer"
-				>
-					{website.url}</a
-				>
 			</div>
 			<div class="flex items-center space-x-4">
 				{#if statuses?.length > 0}
@@ -67,13 +50,11 @@
 				{/if}
 				{#if showSettings}
 					<DropdownMenu.Root>
-						<DropdownMenu.Trigger asChild>
-							{#snippet children({ builder })}
-								<Button builders={[builder]} size="icon" variant="ghost" class="h-8 w-8">
-									<EllipsisVertical class="h-3.5 w-3.5" />
-									<span class="sr-only">More</span>
-								</Button>
-							{/snippet}
+						<DropdownMenu.Trigger>
+							<Button size="icon" variant="ghost" class="h-8 w-8">
+								<EllipsisVertical class="h-3.5 w-3.5" />
+								<span class="sr-only">More</span>
+							</Button>
 						</DropdownMenu.Trigger>
 						<DropdownMenu.Content align="end">
 							<DropdownMenu.Item
@@ -97,27 +78,30 @@
 				{/if}
 			</div>
 		</div>
-		<div class="m-2 grid grid-cols-3 gap-2 divide-x rounded-lg border-2 border-foreground">
-			{#if !loadingStatuses}
+		<div class="mb-4 text-xs text-muted-foreground">
+			<div>Pinging every {website.checkInterval} mins.</div>
+			<a href={website.url} target="_blank" rel="noopener noreferrer">
+				{website.url}
+			</a>
+		</div>
+		{#if !loadingStatuses}
+			<div class="mb-2 grid grid-cols-2 gap-2 divide-x rounded-lg border">
 				<StatusAvailability {statuses} />
-			{:else}
-				<div></div>
-			{/if}
-			{#if !loadingStatuses}
 				<StatusPerformance {statuses} />
-			{:else}
-				<div></div>
-			{/if}
-			<StatusPing {website} />
-		</div>
-		<div class="flex h-44 w-full items-center justify-center p-4">
-			{#if statuses.length > 0}
-				<div class="h-full w-full">
-					<StatusChart {statuses} />
-				</div>
-			{:else}
-				<p class="text-muted-foreground">No data available</p>
-			{/if}
-		</div>
+			</div>
+			<div class="flex h-44 w-full items-center justify-center p-4">
+				{#if statuses.length > 0}
+					<div class="h-full w-full">
+						<StatusChart {statuses} />
+					</div>
+				{:else}
+					No data available! :(
+				{/if}
+			</div>
+		{:else}
+			<div class="flex h-40 w-full items-center justify-center">
+				<LoaderCircle class="ml-2 h-5 w-5 animate-spin" />
+			</div>
+		{/if}
 	</Card.Root>
 {/if}
