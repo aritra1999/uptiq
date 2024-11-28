@@ -7,14 +7,8 @@
 	import ProjectDelete from '$lib/components/ui/projects/project-delete.svelte';
 	import Header from '$lib/components/ui/page/header.svelte';
 
-	const { data } = $props();
 	let showProjectFormDialog = $state(false);
 	let showDeleteProjectDialog = $state(false);
-
-	$effect(() => {
-		const projects = data.projects;
-		if (projects) projectStore.set(projects);
-	});
 </script>
 
 <section class="flex items-center justify-between">

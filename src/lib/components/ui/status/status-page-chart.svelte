@@ -24,7 +24,7 @@
 		{/if}
 	</div>
 	<div class="mx-auto flex w-full items-center justify-center gap-0.5">
-		{#each Array(Math.max(0, MAX_STATUSES - statuses.length)).fill(undefined) as emptyStatus}
+		{#each Array(Math.max(0, MAX_STATUSES - statuses.length)).fill(undefined) as i}
 			<HoverCard.Root openDelay={100} closeDelay={0}>
 				<HoverCard.Trigger
 					target="_blank"
@@ -33,7 +33,7 @@
 					style="background-color: {statusColorMap['maintenance']}"
 				/>
 				<HoverCard.Content class="w-fit">
-					<ul class="text-sm text-muted-foreground">No data available!</ul>
+					<ul class="text-sm text-muted-foreground" id={i}>No data available!</ul>
 				</HoverCard.Content>
 			</HoverCard.Root>
 		{/each}

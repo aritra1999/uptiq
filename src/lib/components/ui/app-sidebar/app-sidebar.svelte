@@ -31,7 +31,7 @@
 							<Collapsible.Trigger>
 								{#snippet child({ props })}
 									<Sidebar.MenuButton {...props}>
-										<span>Projects</span>
+										<a href="/projects">Projects</a>
 										<ChevronRight
 											class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
 										/>
@@ -46,7 +46,7 @@
 											<Sidebar.MenuSubItem>
 												<Sidebar.MenuSubButton>
 													{#snippet child({ props })}
-														<a href="/project/{project.slug}" {...props}>
+														<a href="/projects/{project.slug}" {...props}>
 															<span>{project.name}</span>
 														</a>
 													{/snippet}

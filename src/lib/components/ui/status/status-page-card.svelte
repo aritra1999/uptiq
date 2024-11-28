@@ -1,18 +1,15 @@
 <script lang="ts">
+	import type { SelectPartialStatus } from '$lib/db/schema';
 	import * as Card from '$lib/components/ui/card';
 	import StatusBadge from '$lib/components/ui/status/status-badge.svelte';
 	import StatusAvailability from '$lib/components/ui/status/status-availability.svelte';
 	import StatusPerformance from '$lib/components/ui/status/status-performance.svelte';
 	import StatusPageChart from '$lib/components/ui/status/status-page-chart.svelte';
 
-	interface Status {
-		status: string;
-	}
-
 	interface StatusPageItem {
 		name: string;
 		url: string;
-		statuses: Status[];
+		statuses: SelectPartialStatus[];
 	}
 
 	interface Props {
