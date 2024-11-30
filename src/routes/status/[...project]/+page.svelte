@@ -4,6 +4,8 @@
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 	import StatusPageCard from '$lib/components/ui/status/status-page-card.svelte';
 	import type { StatusPageResponse } from '$lib/api/types.js';
+	import { Button } from '$lib/components/ui/button';
+	import { toggleMode } from 'mode-watcher';
 
 	interface Props {
 		data: { project: { id: string; name: string; description: string } };
@@ -66,7 +68,9 @@
 			{/if}
 		</section>
 		<div class="my-2 text-center text-xs">
-			Powered by <a href="https://uptiq.vercel.app" class="underline"> uptiq </a>
+			Powered by
+			<Button class="px-2 text-xs" variant="link" href="https://uptiq.vercel.app">uptiq</Button> |
+			<Button class="px-2 text-xs" variant="link" onclick={toggleMode}>Toggle theme</Button>
 		</div>
 	</main>
 {/if}

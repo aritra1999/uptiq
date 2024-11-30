@@ -20,14 +20,18 @@
 
 <section class="flex items-center justify-between">
 	<Header title={data.project.name} />
-	<Button
-		onclick={() => {
-			showWebsiteFormDialog = true;
-			selectedWebsiteIdStore.set(null);
-		}}
-	>
-		Add Site
-	</Button>
+	<div class="space-x-2">
+		<Button variant="outline" target="_blank" href="/status/{data.project.slug}">Status Page</Button
+		>
+		<Button
+			onclick={() => {
+				showWebsiteFormDialog = true;
+				selectedWebsiteIdStore.set(null);
+			}}
+		>
+			Add Site
+		</Button>
+	</div>
 </section>
 {#if $websiteStore === undefined}
 	<p>Loading sites...</p>
