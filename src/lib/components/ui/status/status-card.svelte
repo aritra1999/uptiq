@@ -10,7 +10,6 @@
 	import StatusPerformance from '$lib/components/ui/status/status-performance.svelte';
 	import EllipsisVertical from 'lucide-svelte/icons/ellipsis-vertical';
 	import LoaderCircle from 'lucide-svelte/icons/loader-circle';
-	import { onMount } from 'svelte';
 
 	let {
 		websiteId,
@@ -24,14 +23,19 @@
 	let loadingStatuses = $state(true);
 	let website = $derived($websiteStore && websiteId ? $websiteStore.get(websiteId) : undefined);
 
-	onMount(async () => {
+	async function loadWebsiteStatus(websiteId: string) {
 		if (!websiteId) return;
+		loadingStatuses = true;
 		statuses =
 			demoStatuses.length > 0
 				? demoStatuses
 				: await fetch(`/api/status/${websiteId}`).then((response) => response.json());
 
 		loadingStatuses = false;
+	}
+
+	$effect(() => {
+		loadWebsiteStatus(websiteId);
 	});
 </script>
 
