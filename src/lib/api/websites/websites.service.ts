@@ -1,5 +1,5 @@
 import { db } from '$lib/db/drizzle';
-import { websites, type InsertWebsite, type SelectWebsitePartial } from '$lib/db/schema';
+import { projects, websites, type InsertWebsite, type SelectWebsitePartial } from '$lib/db/schema';
 import { and, count, eq } from 'drizzle-orm';
 import type { ServiceResponse } from '../types';
 import type { StatusCode } from 'hono/utils/http-status';
@@ -75,6 +75,42 @@ export const getWebsites = async (
 		})
 		.from(websites)
 		.where(and(eq(websites.userId, userId), eq(websites.projectId, project.id)))
+		.then((response) => {
+			return {
+				status: 200 as StatusCode,
+				data: response
+			};
+		})
+		.catch((error) => {
+			return {
+				status: 400 as StatusCode,
+				error: error.message
+			};
+		});
+};
+
+export const getWebsitesForUser = async (
+	userId: string
+): Promise<
+	ServiceResponse<
+		{
+			id: string;
+			name: string;
+			projectId: string;
+			projectName: string | null;
+		}[]
+	>
+> => {
+	return await db
+		.select({
+			id: websites.id,
+			name: websites.name,
+			projectId: websites.projectId,
+			projectName: projects.name
+		})
+		.from(websites)
+		.leftJoin(projects, eq(websites.projectId, projects.id))
+		.where(eq(websites.userId, userId))
 		.then((response) => {
 			return {
 				status: 200 as StatusCode,
