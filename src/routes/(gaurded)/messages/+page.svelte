@@ -2,6 +2,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Table from '$lib/components/ui/table';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import Header from '$lib/components/ui/page/header.svelte';
 	import MessageForm from '$lib/components/ui/messages/message-form.svelte';
 	import MessageDelete from '$lib/components/ui/messages/message-delete.svelte';
@@ -10,6 +11,7 @@
 	import Pencil from 'lucide-svelte/icons/pencil';
 	import Trash2 from 'lucide-svelte/icons/trash-2';
 	import X from 'lucide-svelte/icons/x';
+	import EllipsisVertical from 'lucide-svelte/icons/ellipsis-vertical';
 
 	let { data } = $props();
 	let showMessageFormDialog = $state(false);
@@ -74,27 +76,34 @@
 							<Table.Cell class="w-52">{message.title}</Table.Cell>
 							<Table.Cell>{message.content}</Table.Cell>
 							<Table.Cell class="w-32">{prettifyDate(new Date(message.startTime))}</Table.Cell>
-							<Table.Cell class="w-32 space-x-2">
-								<Button
-									variant="secondary"
-									size="icon"
-									onclick={() => {
-										showMessageFormDialog = true;
-										selectedMessageStore.set(message.id);
-									}}
-								>
-									<Pencil class="size-3" />
-								</Button>
-								<Button
-									variant="destructive"
-									size="icon"
-									onclick={() => {
-										showDeleteMessageDialog = true;
-										selectedMessageStore.set(message.id);
-									}}
-								>
-									<Trash2 class="size-3" />
-								</Button>
+							<Table.Cell class="w-8 space-x-2">
+								<DropdownMenu.Root>
+									<DropdownMenu.Trigger>
+										<Button size="icon" variant="ghost" class="h-8 w-8">
+											<EllipsisVertical class="h-3.5 w-3.5" />
+											<span class="sr-only">More</span>
+										</Button>
+									</DropdownMenu.Trigger>
+									<DropdownMenu.Content align="end">
+										<DropdownMenu.Item
+											onclick={() => {
+												showMessageFormDialog = true;
+												selectedMessageStore.set(message.id);
+											}}
+										>
+											Edit
+										</DropdownMenu.Item>
+										<DropdownMenu.Separator />
+										<DropdownMenu.Item
+											onclick={() => {
+												showDeleteMessageDialog = true;
+												selectedMessageStore.set(message.id);
+											}}
+										>
+											Delete
+										</DropdownMenu.Item>
+									</DropdownMenu.Content>
+								</DropdownMenu.Root>
 							</Table.Cell>
 						</Table.Row>
 					{/if}
