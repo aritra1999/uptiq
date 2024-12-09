@@ -125,10 +125,19 @@ export const updateMessage = async (
 	messageId: string,
 	updatedMessage: InsertMessage
 ): Promise<ServiceResponse<SelectMessagePartial>> => {
+	const message = await getMessage(userId, messageId);
+	console.log(message);
+	if (!message) {
+		return {
+			status: 400,
+			error: 'Invalid message ID!'
+		};
+	}
+
 	return await db
 		.update(messages)
 		.set(updatedMessage)
-		.where(and(eq(websites.userId, userId), eq(messages.id, messageId)))
+		.where(and(eq(messages.userId, userId), eq(messages.id, messageId)))
 		.returning({
 			id: messages.id,
 			title: messages.title,
