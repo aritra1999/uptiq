@@ -1,5 +1,6 @@
 import { db } from '$lib/db/drizzle';
 import {
+	messages,
 	projects,
 	uptimeChecks,
 	websites,
@@ -7,7 +8,7 @@ import {
 	type SelectProjectPartial
 } from '$lib/db/schema';
 import { desc, eq } from 'drizzle-orm';
-import type { ServiceResponse, StatusPageResponse } from '../types';
+import type { ServiceResponse, StatusPageMessages, StatusPageResponse } from '../types';
 import type { StatusCode } from 'hono/utils/http-status';
 
 export const getStatus = async (
@@ -37,6 +38,22 @@ export const getStatus = async (
 				status: 500 as StatusCode,
 				data: []
 			};
+		});
+};
+
+export const getMessages = async (websiteId: string): Promise<StatusPageMessages[]> => {
+	return await db
+		.select({
+			title: messages.title,
+			content: messages.content,
+			startTime: messages.startTime
+		})
+		.from(messages)
+		.where(eq(messages.websiteId, websiteId))
+		.orderBy(desc(messages.startTime))
+		.catch((error) => {
+			console.log(error);
+			return [];
 		});
 };
 
@@ -90,15 +107,16 @@ export const getStatusPage = async (
 
 	const statusPromises = websitesResponse.map(async (website) => {
 		const statusResponse = await getStatus(website.id, 50);
-
 		if (statusResponse.status !== 200 || !statusResponse.data) {
-			// Optionally handle individual errors here
-			return null; // Exclude this website from the results
+			return null;
 		}
+
+		const messages = await getMessages(website.id);
 
 		return {
 			...website,
-			statuses: statusResponse.data
+			statuses: statusResponse.data,
+			messages: messages
 		};
 	});
 

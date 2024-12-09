@@ -14,7 +14,8 @@ export const prettifyDate = (date: Date): string => {
 
 	const dateFormatter = new Intl.DateTimeFormat('en-US', {
 		day: '2-digit',
-		month: 'short'
+		month: 'short',
+		year: 'numeric'
 	});
 
 	const time = timeFormatter.format(date);

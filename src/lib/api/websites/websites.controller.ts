@@ -5,6 +5,7 @@ import {
 	deleteWebsite,
 	getWebsite,
 	getWebsites,
+	getWebsitesForUser,
 	updateWebsite
 } from './websites.service';
 import { validateRequestBody } from '../middlewares';
@@ -27,6 +28,18 @@ export const getWebsiteController = async (context: Context) => {
 	if (!project) return context.json({ error: 'Project not found' }, 404);
 
 	const websiteResponse = await getWebsite(String(token.id), websiteId);
+
+	return context.json(
+		websiteResponse.error ? { error: websiteResponse.error } : websiteResponse.data,
+		websiteResponse.status
+	);
+};
+
+export const getWebsitesForUserController = async (context: Context) => {
+	const { token } = context.get('authUser');
+	if (!token) return context.status(401);
+
+	const websiteResponse = await getWebsitesForUser(String(token.id));
 
 	return context.json(
 		websiteResponse.error ? { error: websiteResponse.error } : websiteResponse.data,
@@ -121,8 +134,9 @@ const PartialInsertWebsiteSchema = InsertWebsiteSchema.pick({
 });
 
 websitesRouter.use(verifyAuth());
-websitesRouter.get('/:slug/:websiteId', getWebsiteController);
+websitesRouter.get('/', getWebsitesForUserController);
 websitesRouter.get('/:slug', getWebsitesController);
+websitesRouter.get('/:slug/:websiteId', getWebsiteController);
 websitesRouter.post(
 	'/:slug',
 	validateRequestBody(PartialInsertWebsiteSchema),

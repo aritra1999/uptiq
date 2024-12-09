@@ -111,10 +111,26 @@ export const alerts = pgTable('alerts', {
 	updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
 });
 
+export const messages = pgTable('messages', {
+	id: uuid('id').primaryKey().defaultRandom(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+	websiteId: uuid('website_id')
+		.notNull()
+		.references(() => websites.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+	title: varchar('title', { length: 100 }).notNull(),
+	content: varchar('content', { length: 1000 }).notNull(),
+	startTime: timestamp('start_time', { withTimezone: true, mode: 'string' }).notNull(),
+	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
 	projects: many(projects),
-	websites: many(websites)
+	websites: many(websites),
+	messages: many(messages)
 }));
 
 export const projectsRelations = relations(projects, ({ one, many }) => ({
@@ -135,7 +151,8 @@ export const websitesRelations = relations(websites, ({ one, many }) => ({
 		references: [users.id]
 	}),
 	uptimeChecks: many(uptimeChecks),
-	alerts: many(alerts)
+	alerts: many(alerts),
+	messages: many(messages)
 }));
 
 export const uptimeChecksRelations = relations(uptimeChecks, ({ one }) => ({
@@ -152,16 +169,29 @@ export const alertsRelations = relations(alerts, ({ one }) => ({
 	})
 }));
 
+export const messagesRelations = relations(messages, ({ one }) => ({
+	website: one(websites, {
+		fields: [messages.websiteId],
+		references: [websites.id]
+	}),
+	user: one(users, {
+		fields: [messages.userId],
+		references: [users.id]
+	})
+}));
+
 // Insert types
 export type InsertUser = typeof users.$inferInsert;
 export type InsertProject = typeof projects.$inferInsert;
 export type InsertWebsite = typeof websites.$inferInsert;
+export type InsertMessage = typeof messages.$inferInsert;
 
 // Select types
 export type SelectUptimeCheck = typeof uptimeChecks.$inferSelect;
 export type SelectProject = typeof projects.$inferSelect;
 export type SelectWebsite = typeof websites.$inferSelect;
 export type SelectStatus = typeof uptimeChecks.$inferSelect;
+export type SelectMessage = typeof messages.$inferSelect;
 
 // Partial Select types
 export type SelectWebsiteStatusCard = Pick<SelectWebsite, 'id' | 'name' | 'url' | 'checkInterval'>;
@@ -171,7 +201,9 @@ export type SelectPartialStatus = Pick<
 	SelectStatus,
 	'status' | 'responseTime' | 'statusCode' | 'createdAt'
 >;
+export type SelectMessagePartial = Pick<SelectMessage, 'id' | 'title' | 'content' | 'startTime'>;
 
 // Zod Schemas
 export const InsertProjectSchema = createInsertSchema(projects);
 export const InsertWebsiteSchema = createInsertSchema(websites);
+export const InsertMessageSchema = createInsertSchema(messages);

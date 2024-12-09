@@ -1,15 +1,20 @@
 <script lang="ts">
 	import type { SelectPartialStatus } from '$lib/db/schema';
+	import { prettifyDate } from '$lib/utils';
 	import * as Card from '$lib/components/ui/card';
+	import * as Accordion from '$lib/components/ui/accordion/index.js';
 	import StatusBadge from '$lib/components/ui/status/status-badge.svelte';
 	import StatusAvailability from '$lib/components/ui/status/status-availability.svelte';
 	import StatusPerformance from '$lib/components/ui/status/status-performance.svelte';
 	import StatusPageChart from '$lib/components/ui/status/status-page-chart.svelte';
+	import type { StatusPageMessages } from '$lib/api/types';
+	import Calendar from 'lucide-svelte/icons/calendar';
 
 	interface StatusPageItem {
 		name: string;
 		url: string;
 		statuses: SelectPartialStatus[];
+		messages: StatusPageMessages[];
 	}
 
 	interface Props {
@@ -34,7 +39,7 @@
 			{/if}
 		</div>
 	</div>
-	<div class="flex flex-col items-center justify-between gap-4 sm:flex-row sm:gap-8">
+	<div class=" flex flex-col items-center justify-between gap-4 sm:flex-row sm:gap-8">
 		<div class="w-full sm:w-1/2">
 			<div class="mb-2">
 				<a
@@ -60,4 +65,56 @@
 			{/if}
 		</div>
 	</div>
+	{#if statusPageItem.messages.length > 0}
+		<div class="mt-4">
+			<Accordion.Root
+				type="single"
+				value={statusPageItem.name}
+				class="w-full rounded-lg bg-sidebar px-4"
+			>
+				<Accordion.Item value={statusPageItem.name}>
+					<Accordion.Trigger>Messages</Accordion.Trigger>
+					<Accordion.Content>
+						<ol class="relative ms-4 border-s">
+							{#each statusPageItem.messages as message}
+								<li class="mb-6 ms-4 px-4">
+									<span
+										class="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-accent dark:ring-gray-900"
+									>
+										<Calendar class="size-3" />
+									</span>
+									<div class="mb-2 flex items-center space-x-2">
+										<h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+											{message.title}
+										</h3>
+										<time class="block text-xs font-normal leading-none text-muted-foreground">
+											{prettifyDate(new Date(message.startTime))}
+										</time>
+									</div>
+									<p class="text-sm">
+										{message.content}
+									</p>
+								</li>
+							{/each}
+						</ol>
+						<!-- <ol class="relative gap-10 border-s border-gray-200 dark:border-gray-700">
+
+								<li class=" ms-4">
+									<div
+										class="absolute -start-1.5 mt-1.5 h-3 w-3 rounded-full border bg-gray-200 dark:bg-gray-700"
+									></div>
+									<time
+										class="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500"
+									>
+
+									</time>
+
+								</li>
+							{/each}
+						</ol> -->
+					</Accordion.Content>
+				</Accordion.Item>
+			</Accordion.Root>
+		</div>
+	{/if}
 </Card.Root>
