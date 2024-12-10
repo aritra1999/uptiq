@@ -8,8 +8,6 @@
 	import MessageDelete from '$lib/components/ui/messages/message-delete.svelte';
 	import { messageStore, selectedMessageStore } from '$lib/store/message.store';
 	import { prettifyDate } from '$lib/utils.js';
-	import Pencil from 'lucide-svelte/icons/pencil';
-	import Trash2 from 'lucide-svelte/icons/trash-2';
 	import X from 'lucide-svelte/icons/x';
 	import EllipsisVertical from 'lucide-svelte/icons/ellipsis-vertical';
 
@@ -26,11 +24,11 @@
 <section class="flex items-center justify-between">
 	<div class="flex items-center space-x-4">
 		<Header title="Messages" />
-		{#if data.selectedWebsite}
+		{#if data.websites && data.selectedWebsite}
 			<div class="flex items-center rounded-lg bg-sidebar py-2 pl-4 text-xs">
 				<div class="pb-0.5">
 					<span class="text-muted-foreground">Selected website: </span>
-					{data.websites.find((website) => website.id === data.selectedWebsite).name}
+					{data.websites.find((website) => website.id === data.selectedWebsite)?.name}
 				</div>
 				<Button variant="link" href="/messages" class="h-4">
 					<X class="size-2 " />
@@ -71,7 +69,7 @@
 					{#if message}
 						<Table.Row>
 							<Table.Cell class="w-52">
-								{data.websites.find((website) => website.id === message.websiteId).name}
+								{data.websites.find((website) => website.id === message.websiteId)?.name}
 							</Table.Cell>
 							<Table.Cell class="w-52">{message.title}</Table.Cell>
 							<Table.Cell>{message.content}</Table.Cell>

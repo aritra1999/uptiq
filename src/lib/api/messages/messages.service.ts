@@ -31,6 +31,7 @@ export const getMessage = async (
 		.select({
 			id: messages.id,
 			title: messages.title,
+			websiteId: messages.websiteId,
 			content: messages.content,
 			startTime: messages.startTime
 		})
@@ -103,6 +104,7 @@ export const createMessage = async (
 		.returning({
 			id: messages.id,
 			title: messages.title,
+			websiteId: messages.websiteId,
 			content: messages.content,
 			startTime: messages.startTime
 		})
@@ -141,6 +143,7 @@ export const updateMessage = async (
 		.returning({
 			id: messages.id,
 			title: messages.title,
+			websiteId: messages.websiteId,
 			content: messages.content,
 			startTime: messages.startTime
 		})

@@ -10,13 +10,8 @@
 <div>
 	<div class="mb-2 flex w-full items-center justify-between">
 		{#if statuses.length > 0}
-			<div class="flex w-full items-center justify-between text-sm text-muted-foreground">
+			<div class="flex w-full items-center justify-between text-xs text-muted-foreground">
 				<div>{prettifyDate(new Date(statuses[0].createdAt))}</div>
-				{#if statuses.length > 2}
-					<div>
-						{prettifyDate(new Date(statuses[Math.floor((statuses.length - 1) / 2)].createdAt))}
-					</div>
-				{/if}
 				<div>{prettifyDate(new Date(statuses[statuses.length - 1].createdAt))}</div>
 			</div>
 		{:else}
