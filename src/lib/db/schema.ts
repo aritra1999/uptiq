@@ -201,7 +201,10 @@ export type SelectPartialStatus = Pick<
 	SelectStatus,
 	'status' | 'responseTime' | 'statusCode' | 'createdAt'
 >;
-export type SelectMessagePartial = Pick<SelectMessage, 'id' | 'title' | 'content' | 'startTime'>;
+export type SelectMessagePartial = Pick<
+	SelectMessage,
+	'id' | 'title' | 'content' | 'startTime' | 'websiteId'
+>;
 
 // Zod Schemas
 export const InsertProjectSchema = createInsertSchema(projects);
