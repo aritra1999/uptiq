@@ -3,7 +3,8 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load = (async ({ params, fetch }) => {
-	const project: SelectProject = await fetch(`/api/projects/${params.slug}`, {
+	const projectSlug = params.slug;
+	const project: SelectProject = await fetch(`/api/projects/${projectSlug}`, {
 		method: 'GET'
 	})
 		.then((response) => response.json())
@@ -12,7 +13,7 @@ export const load = (async ({ params, fetch }) => {
 			return project;
 		});
 
-	const websites: Map<string, SelectWebsitePartial> = await fetch(`/api/websites/${params.slug}`, {
+	const websites: Map<string, SelectWebsitePartial> = await fetch(`/api/websites/${projectSlug}`, {
 		method: 'GET'
 	})
 		.then((response) => response.json())
