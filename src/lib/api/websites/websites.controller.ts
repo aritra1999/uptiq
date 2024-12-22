@@ -134,9 +134,11 @@ const PartialInsertWebsiteSchema = InsertWebsiteSchema.pick({
 });
 
 websitesRouter.use(verifyAuth());
-websitesRouter.get('/', getWebsitesForUserController);
-websitesRouter.get('/:slug', getWebsitesController);
-websitesRouter.get('/:slug/:websiteId', getWebsiteController);
+
+// websitesRouter.get('/', getWebsitesForUserController);
+// websitesRouter.get('/:slug', getWebsitesController);
+// websitesRouter.get('/:slug/:websiteId', getWebsiteController);
+
 websitesRouter.post(
 	'/:slug',
 	validateRequestBody(PartialInsertWebsiteSchema),
