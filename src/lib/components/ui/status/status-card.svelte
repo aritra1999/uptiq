@@ -85,7 +85,6 @@
 			</div>
 		</div>
 		<div class="mb-4 text-xs text-muted-foreground">
-			<div>Pinging every {website.checkInterval} mins.</div>
 			<a href={website.url} target="_blank" rel="noopener noreferrer">
 				{website.url}
 			</a>

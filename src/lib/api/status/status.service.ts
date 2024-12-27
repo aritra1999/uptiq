@@ -99,8 +99,7 @@ export const getStatusPage = async (
 		.select({
 			id: websites.id,
 			name: websites.name,
-			url: websites.url,
-			checkInterval: websites.checkInterval
+			url: websites.url
 		})
 		.from(websites)
 		.where(eq(websites.projectId, projectId));
