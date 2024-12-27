@@ -12,7 +12,6 @@ import { relations } from 'drizzle-orm';
 import { createInsertSchema } from 'drizzle-zod';
 
 // Enums
-export const checkIntervalEnum = pgEnum('check_interval_enum', ['1', '2', '5', '10']);
 export const statusEnum = pgEnum('status_enum', [
 	'up',
 	'degraded',
@@ -81,9 +80,8 @@ export const websites = pgTable('websites', {
 	userId: text('user_id')
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-	url: varchar('url', { length: 2083 }).notNull(), // max URL length for compatibility
+	url: varchar('url', { length: 2083 }).notNull(),
 	name: varchar('name', { length: 25 }).notNull(),
-	checkInterval: checkIntervalEnum('check_interval').notNull().default('5'),
 	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 	updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
 });
@@ -194,9 +192,9 @@ export type SelectStatus = typeof uptimeChecks.$inferSelect;
 export type SelectMessage = typeof messages.$inferSelect;
 
 // Partial Select types
-export type SelectWebsiteStatusCard = Pick<SelectWebsite, 'id' | 'name' | 'url' | 'checkInterval'>;
+export type SelectWebsiteStatusCard = Pick<SelectWebsite, 'id' | 'name' | 'url'>;
 export type SelectProjectPartial = Pick<SelectProject, 'id' | 'slug' | 'name' | 'description'>;
-export type SelectWebsitePartial = Pick<SelectWebsite, 'id' | 'name' | 'url' | 'checkInterval'>;
+export type SelectWebsitePartial = Pick<SelectWebsite, 'id' | 'name' | 'url'>;
 export type SelectPartialStatus = Pick<
 	SelectStatus,
 	'status' | 'responseTime' | 'statusCode' | 'createdAt'
