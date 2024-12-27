@@ -51,11 +51,9 @@ export const getWebsitesController = async (context: Context) => {
 	const { token } = context.get('authUser');
 	if (!token) return context.status(401);
 
-	const { slug } = context.req.param();
-	if (!slug) return context.json({ error: 'Missing project slug' }, 400);
+	const projectSlug = context.req.query('projectSlug');
 
-	const websiteResponse = await getWebsites(String(token.id), slug);
-
+	const websiteResponse = await getWebsites(String(token.id), projectSlug);
 	return context.json(
 		websiteResponse.error ? { error: websiteResponse.error } : websiteResponse.data,
 		websiteResponse.status
@@ -134,9 +132,14 @@ const PartialInsertWebsiteSchema = InsertWebsiteSchema.pick({
 });
 
 websitesRouter.use(verifyAuth());
-websitesRouter.get('/', getWebsitesForUserController);
-websitesRouter.get('/:slug', getWebsitesController);
-websitesRouter.get('/:slug/:websiteId', getWebsiteController);
+
+// websitesRouter.get('/', getWebsitesForUserController);
+// websitesRouter.get('/:slug', getWebsitesController);
+// websitesRouter.get('/:slug/:websiteId', getWebsiteController);
+
+websitesRouter.get('/', getWebsitesController);
+websitesRouter.get('/:websiteId');
+
 websitesRouter.post(
 	'/:slug',
 	validateRequestBody(PartialInsertWebsiteSchema),

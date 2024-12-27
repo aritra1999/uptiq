@@ -60,11 +60,16 @@ export const getWebsite = async (
 
 export const getWebsites = async (
 	userId: string,
-	slug: string
+	projectSlug: string | undefined
 ): Promise<ServiceResponse<SelectWebsitePartial[]>> => {
-	const project = await getProjectBySlug(userId, slug);
+	const conditions = [eq(websites.userId, userId)];
 
-	if (!project) return { status: 404, error: 'Project not found!' };
+	if (projectSlug) {
+		const project = await getProjectBySlug(userId, projectSlug);
+		if (!project) return { status: 404, error: 'Project not found!' };
+
+		conditions.push(eq(websites.projectId, project.id));
+	}
 
 	return await db
 		.select({
@@ -74,7 +79,7 @@ export const getWebsites = async (
 			url: websites.url
 		})
 		.from(websites)
-		.where(and(eq(websites.userId, userId), eq(websites.projectId, project.id)))
+		.where(and(...conditions))
 		.then((response) => {
 			return {
 				status: 200 as StatusCode,

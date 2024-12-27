@@ -12,9 +12,12 @@ export const load = (async ({ params, fetch }) => {
 			return project;
 		});
 
-	const websites: Map<string, SelectWebsitePartial> = await fetch(`/api/websites/${params.slug}`, {
-		method: 'GET'
-	})
+	const websites: Map<string, SelectWebsitePartial> = await fetch(
+		`/api/websites?projectSlug=${params.slug}`,
+		{
+			method: 'GET'
+		}
+	)
 		.then((response) => response.json())
 		.then(
 			(websites) =>
