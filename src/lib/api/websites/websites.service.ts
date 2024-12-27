@@ -32,7 +32,6 @@ export const getWebsite = async (
 		.select({
 			id: websites.id,
 			name: websites.name,
-			checkInterval: websites.checkInterval,
 			url: websites.url
 		})
 		.from(websites)
@@ -75,7 +74,6 @@ export const getWebsites = async (
 		.select({
 			id: websites.id,
 			name: websites.name,
-			checkInterval: websites.checkInterval,
 			url: websites.url
 		})
 		.from(websites)
@@ -145,7 +143,6 @@ export const createWebsite = async (
 		.returning({
 			id: websites.id,
 			name: websites.name,
-			checkInterval: websites.checkInterval,
 			url: websites.url
 		})
 		.then((response) => {
@@ -174,7 +171,6 @@ export const updateWebsite = async (
 		.returning({
 			id: websites.id,
 			name: websites.name,
-			checkInterval: websites.checkInterval,
 			url: websites.url
 		})
 		.then((response) => {

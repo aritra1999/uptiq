@@ -1,0 +1,1 @@
+ALTER TABLE "websites" DROP COLUMN IF EXISTS "check_interval";

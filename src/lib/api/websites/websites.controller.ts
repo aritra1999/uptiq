@@ -76,8 +76,7 @@ export const postWebsitesController = async (context: Context) => {
 		userId: String(token.id),
 		projectId: project.id,
 		name: website.name as string,
-		url: website.url as string,
-		checkInterval: website.checkInterval
+		url: website.url as string
 	});
 
 	return context.json(
@@ -127,8 +126,7 @@ export const deleteWebsitesController = async (context: Context) => {
 
 const PartialInsertWebsiteSchema = InsertWebsiteSchema.pick({
 	name: true,
-	url: true,
-	checkInterval: true
+	url: true
 });
 
 websitesRouter.use(verifyAuth());
