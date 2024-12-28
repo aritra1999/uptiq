@@ -13,7 +13,7 @@ import type { StatusCode } from 'hono/utils/http-status';
 
 export const getStatus = async (
 	websiteId: string,
-	limit = 50
+	limit: number
 ): Promise<ServiceResponse<SelectPartialStatus[]>> => {
 	return await db
 		.select({
@@ -29,7 +29,7 @@ export const getStatus = async (
 		.then((response) => {
 			return {
 				status: 200 as StatusCode,
-				data: response
+				data: response.reverse()
 			};
 		})
 		.catch((error) => {

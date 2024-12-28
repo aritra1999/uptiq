@@ -7,7 +7,9 @@ export const getStatusController = async (context: Context) => {
 	const { websiteId } = context.req.param();
 	if (!websiteId) return context.json({ error: 'Missing website ID' }, 400);
 
-	const websiteResponse = await getStatus(websiteId);
+	const limit = context.req.query('limit') ? Math.min(Number(context.req.query('limit'))) : 50;
+
+	const websiteResponse = await getStatus(websiteId, limit);
 
 	return context.json(
 		websiteResponse.error ? { error: websiteResponse.error } : websiteResponse.data,

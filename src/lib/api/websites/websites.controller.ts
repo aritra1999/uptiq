@@ -18,14 +18,8 @@ export const getWebsiteController = async (context: Context) => {
 	const { token } = context.get('authUser');
 	if (!token) return context.status(401);
 
-	const { slug } = context.req.param();
-	if (!slug) return context.json({ error: 'Missing project slug' }, 400);
-
 	const { websiteId } = context.req.param();
 	if (!websiteId) return context.json({ error: 'Missing website ID' }, 400);
-
-	const project = await getProjectBySlug(String(token.id), slug);
-	if (!project) return context.json({ error: 'Project not found' }, 404);
 
 	const websiteResponse = await getWebsite(String(token.id), websiteId);
 
@@ -136,7 +130,7 @@ websitesRouter.use(verifyAuth());
 // websitesRouter.get('/:slug/:websiteId', getWebsiteController);
 
 websitesRouter.get('/', getWebsitesController);
-websitesRouter.get('/:websiteId');
+websitesRouter.get('/:websiteId', getWebsiteController);
 
 websitesRouter.post(
 	'/:slug',

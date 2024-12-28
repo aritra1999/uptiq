@@ -8,7 +8,6 @@
 	import LoaderCircle from 'lucide-svelte/icons/loader-circle';
 	import { Calendar } from '$lib/components/ui/calendar';
 	import * as Popover from '$lib/components/ui/popover';
-	import * as Select from '$lib/components/ui/select';
 	import {
 		type DateValue,
 		DateFormatter,
@@ -17,7 +16,7 @@
 	} from '@internationalized/date';
 	import { cn } from '$lib/utils';
 
-	let { websites = $bindable(), showMessageFormDialog = $bindable() } = $props();
+	let { websiteId, showMessageFormDialog = $bindable() } = $props();
 	const df = new DateFormatter('en-US', {
 		dateStyle: 'long'
 	});
@@ -42,31 +41,14 @@
 	);
 	let formError = $state('');
 	let loading = $state(false);
-	let selectedWebsite = $state(selectedMessage ? selectedMessage.websiteId : '');
-	let websiteOptions = $state<{ label: string; value: string }[]>(getWebsiteOptions());
-	const triggerContent = $derived(
-		websiteOptions.find((f) => f.value === selectedWebsite)?.label ?? 'Select a website'
-	);
-
-	function getWebsiteOptions() {
-		if (!websites) return [];
-		return websites.map((website) => ({
-			label: `${website.name} (${website.projectName})`,
-			value: website.id
-		}));
-	}
-
-	$effect(() => {
-		websiteOptions = getWebsiteOptions();
-	});
 
 	const handleSubmit = async (event: Event): Promise<void> => {
 		event.preventDefault();
 		loading = true;
 
 		const url = selectedMessage
-			? `/api/messages/${selectedWebsite}/${selectedMessage.id}`
-			: `/api/messages/${selectedWebsite}`;
+			? `/api/messages/${websiteId}/${selectedMessage.id}`
+			: `/api/messages/${websiteId}`;
 		const body = {
 			title,
 			content,
@@ -110,20 +92,6 @@
 			</div>
 		</div>
 	{/if}
-	<Select.Root type="single" name="favoriteFruit" bind:value={selectedWebsite}>
-		<Select.Trigger label="Select a website">
-			{triggerContent}
-		</Select.Trigger>
-		<Select.Content>
-			<Select.Group>
-				{#each websiteOptions as websiteOption}
-					<Select.Item value={websiteOption.value} label={websiteOption.label}>
-						{websiteOption.label}
-					</Select.Item>
-				{/each}
-			</Select.Group>
-		</Select.Content>
-	</Select.Root>
 
 	<Input label="Title" id="title" bind:value={title} required />
 	<div class="flex items-center space-x-4">

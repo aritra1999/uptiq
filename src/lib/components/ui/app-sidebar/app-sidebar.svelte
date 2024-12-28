@@ -62,13 +62,6 @@
 				<Sidebar.MenuItem>
 					<Sidebar.MenuButton>
 						{#snippet child({ props })}
-							<a href="/messages" {...props}>Messages</a>
-						{/snippet}
-					</Sidebar.MenuButton>
-				</Sidebar.MenuItem>
-				<Sidebar.MenuItem>
-					<Sidebar.MenuButton>
-						{#snippet child({ props })}
 							<a href="/settings" {...props}>Settings</a>
 						{/snippet}
 					</Sidebar.MenuButton>

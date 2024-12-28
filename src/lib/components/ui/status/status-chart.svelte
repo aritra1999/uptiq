@@ -55,7 +55,7 @@
 							grid: { color: 'transparent' }
 						},
 						y: {
-							grid: { color: '#f5f5f5' },
+							grid: { color: '#4040401A' },
 							beginAtZero: true
 						}
 					}
@@ -65,7 +65,7 @@
 	});
 </script>
 
-<div class="h-32">
+<div class="h-40">
 	<canvas bind:this={barChartElement}></canvas>
 </div>
 <div class="mt-1 flex items-center justify-between text-xs text-muted-foreground">

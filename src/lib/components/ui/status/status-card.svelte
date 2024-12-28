@@ -67,11 +67,8 @@
 									selectedWebsiteIdStore.set(websiteId);
 								}}>Edit</DropdownMenu.Item
 							>
-							<a href="/messages?websiteId={websiteId}">
-								<DropdownMenu.Item>Messages</DropdownMenu.Item>
-							</a>
 							<DropdownMenu.Item disabled={true}>Pause (coming soon)</DropdownMenu.Item>
-							<DropdownMenu.Item disabled={true}>Subscribers (coming soon)</DropdownMenu.Item>
+							<DropdownMenu.Item disabled={true}>Alerts (coming soon)</DropdownMenu.Item>
 							<DropdownMenu.Separator />
 							<DropdownMenu.Item
 								onclick={() => {

@@ -11,8 +11,8 @@
 	<div class="mb-2 flex w-full items-center justify-between">
 		{#if statuses.length > 0}
 			<div class="flex w-full items-center justify-between text-xs text-muted-foreground">
-				<div>{prettifyDate(new Date(statuses[statuses.length - 1].createdAt))}</div>
 				<div>{prettifyDate(new Date(statuses[0].createdAt))}</div>
+				<div>{prettifyDate(new Date(statuses[statuses.length - 1].createdAt))}</div>
 			</div>
 		{:else}
 			<div class="text-center text-xs text-muted-foreground">No status history available</div>
@@ -50,6 +50,12 @@
 						</li>
 						<li class="flex justify-between">
 							Response Time: <span class="ml-4 text-foreground">{status.responseTime}ms</span>
+						</li>
+						<li class="flex justify-between">
+							Checked at:
+							<span class="ml-4 text-foreground">
+								{prettifyDate(new Date(status.createdAt))}
+							</span>
 						</li>
 					</ul>
 				</HoverCard.Content>
