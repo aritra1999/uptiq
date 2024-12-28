@@ -1,5 +1,4 @@
 import type { SelectProject, SelectWebsitePartial } from '$lib/db/schema';
-import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load = (async ({ params, fetch }) => {
@@ -8,7 +7,6 @@ export const load = (async ({ params, fetch }) => {
 	})
 		.then((response) => response.json())
 		.then((project) => {
-			if (project.error) throw error(400, project.error);
 			return project;
 		});
 
