@@ -19,7 +19,9 @@
 </script>
 
 <section class="flex items-center justify-between">
-	<Header title={data.project.name} />
+	<div>
+		<Header title={data.project.name} description={data.project.description} />
+	</div>
 	<div class="space-x-2">
 		<Button variant="outline" target="_blank" href="/status/{data.project.slug}">Status Page</Button
 		>
@@ -40,7 +42,9 @@
 {:else}
 	<div class="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
 		{#each Array.from($websiteStore.keys()) as websiteId}
-			<StatusCard {websiteId} bind:showWebsiteFormDialog bind:showDeleteWebsiteDialog />
+			<a href="/projects/{data.project.slug}/{websiteId}">
+				<StatusCard {websiteId} bind:showWebsiteFormDialog bind:showDeleteWebsiteDialog />
+			</a>
 		{/each}
 	</div>
 {/if}
