@@ -11,8 +11,8 @@
 	<div class="mb-2 flex w-full items-center justify-between">
 		{#if statuses.length > 0}
 			<div class="flex w-full items-center justify-between text-xs text-muted-foreground">
-				<div>{prettifyDate(new Date(statuses[0].createdAt))}</div>
 				<div>{prettifyDate(new Date(statuses[statuses.length - 1].createdAt))}</div>
+				<div>{prettifyDate(new Date(statuses[0].createdAt))}</div>
 			</div>
 		{:else}
 			<div class="text-center text-xs text-muted-foreground">No status history available</div>

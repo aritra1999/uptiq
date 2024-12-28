@@ -5,7 +5,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { Button } from '$lib/components/ui/button';
 	import StatusBadge from '$lib/components/ui/status/status-badge.svelte';
-	import StatusChart from '$lib/components/ui/status/status-chart.svelte';
+	import StatusPageChart from '$lib/components/ui/status/status-page-chart.svelte';
 	import StatusAvailability from '$lib/components/ui/status/status-availability.svelte';
 	import StatusPerformance from '$lib/components/ui/status/status-performance.svelte';
 	import EllipsisVertical from 'lucide-svelte/icons/ellipsis-vertical';
@@ -94,11 +94,9 @@
 				<StatusAvailability {statuses} />
 				<StatusPerformance {statuses} />
 			</div>
-			<div class="flex h-44 w-full items-center justify-center p-4">
+			<div class="p-2">
 				{#if statuses.length > 0}
-					<div class="h-full w-full">
-						<StatusChart {statuses} />
-					</div>
+					<StatusPageChart {statuses} />
 				{:else}
 					No data available! :(
 				{/if}

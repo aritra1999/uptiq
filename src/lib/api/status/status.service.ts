@@ -13,7 +13,7 @@ import type { StatusCode } from 'hono/utils/http-status';
 
 export const getStatus = async (
 	websiteId: string,
-	limit = 40
+	limit = 50
 ): Promise<ServiceResponse<SelectPartialStatus[]>> => {
 	return await db
 		.select({

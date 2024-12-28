@@ -1,7 +1,10 @@
 <script lang="ts">
-	let { title } = $props();
+	let { title, description = null } = $props();
 </script>
 
-{#if title}
-	<h1 class="my-8 text-3xl font-semibold">{title}</h1>
-{/if}
+<div class="my-8">
+	{#if title}
+		<h1 class="mb-2 text-3xl font-semibold">{title}</h1>
+		{#if description}<p>{description}</p>{/if}
+	{/if}
+</div>
