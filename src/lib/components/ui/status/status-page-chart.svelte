@@ -51,6 +51,12 @@
 						<li class="flex justify-between">
 							Response Time: <span class="ml-4 text-foreground">{status.responseTime}ms</span>
 						</li>
+						<li class="flex justify-between">
+							Checked at:
+							<span class="ml-4 text-foreground">
+								{prettifyDate(new Date(status.createdAt))}
+							</span>
+						</li>
 					</ul>
 				</HoverCard.Content>
 			</HoverCard.Root>
