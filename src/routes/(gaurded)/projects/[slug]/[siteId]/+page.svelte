@@ -102,7 +102,7 @@
 		<Card.Root class="p-2">
 			{#if loadingMessages}
 				<p class="p-6 text-center">Loading messages...</p>
-			{:else if messages && messages.size > 0}
+			{:else if $messageStore && $messageStore.size > 0}
 				<Table.Root>
 					<Table.Header>
 						<Table.Row>
