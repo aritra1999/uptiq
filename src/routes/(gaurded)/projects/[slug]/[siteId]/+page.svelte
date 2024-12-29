@@ -20,7 +20,6 @@
 	let { data } = $props();
 	let statuses: SelectPartialStatus[] = $state([]);
 	let loadingStatus = $state(true);
-	let messages: Map<string, SelectMessagePartial> | null = $state(null);
 	let loadingMessages = $state(true);
 
 	let showMessageFormDialog = $state(false);
@@ -39,7 +38,7 @@
 				loadingStatus = false;
 			});
 
-		messages = await fetch(`/api/messages?websiteId=${data.website.id}`)
+		await fetch(`/api/messages?websiteId=${data.website.id}`)
 			.then((res: Response) => res.json())
 			.then((messages: SelectMessagePartial[]) => {
 				if (!messages) return null;

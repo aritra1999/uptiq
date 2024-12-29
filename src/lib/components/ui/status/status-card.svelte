@@ -10,8 +10,10 @@
 	import StatusPerformance from '$lib/components/ui/status/status-performance.svelte';
 	import EllipsisVertical from 'lucide-svelte/icons/ellipsis-vertical';
 	import LoaderCircle from 'lucide-svelte/icons/loader-circle';
+	import { cn } from '$lib/utils';
 
 	let {
+		classProps,
 		websiteId,
 		showWebsiteFormDialog = $bindable(),
 		showDeleteWebsiteDialog = $bindable(),
@@ -40,7 +42,7 @@
 </script>
 
 {#if website}
-	<Card.Root class="inline-block w-full p-4">
+	<Card.Root class={cn(classProps, 'inline-block w-full p-4')}>
 		<div class="mb-4 flex items-center justify-between">
 			<div>
 				<h2 class="mr-2 text-lg font-medium">{website.name}</h2>
