@@ -124,6 +124,7 @@ export const alertLogs = pgTable('alert_logs', {
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
 	status: statusEnum('status').notNull(), // The status that triggered the alert
+	message: varchar('message', { length: 400 }),
 	sent: boolean('sent').notNull().default(false), // Whether the alert was successfully sent
 	error: varchar('error', { length: 255 }), // Optional error message if alert failed
 	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
@@ -250,7 +251,14 @@ export type SelectMessagePartial = Pick<
 	SelectMessage,
 	'id' | 'title' | 'content' | 'startTime' | 'websiteId'
 >;
-export type SelectAlertPartial = Pick<SelectAlert, 'id' | 'websiteId' | 'target' | 'enabled'>;
+export type SelectAlertPartial = Pick<
+	SelectAlert,
+	'id' | 'websiteId' | 'type' | 'target' | 'enabled'
+>;
+export type SelectAlertLogsPartial = Pick<
+	SelectAlertLog,
+	'id' | 'websiteId' | 'status' | 'createdAt' | 'message'
+>;
 
 // Zod Schemas
 export const InsertProjectSchema = createInsertSchema(projects);

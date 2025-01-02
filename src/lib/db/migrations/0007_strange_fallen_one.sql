@@ -1,0 +1,1 @@
+ALTER TABLE "alert_logs" ADD COLUMN "message" varchar(400);
