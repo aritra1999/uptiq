@@ -23,9 +23,9 @@
 	import { prettifyDate } from '$lib/utils';
 	import SiteAlertForm from '$lib/components/ui/site-alert/site-alert-form.svelte';
 	import SiteAlertDelete from '$lib/components/ui/site-alert/site-alert-delete.svelte';
+	import SiteAlertTest from '$lib/components/ui/site-alert/site-alert-test.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import { statusColorMap } from '$lib/components/ui/status/constants.js';
-	import FlaskConical from 'lucide-svelte/icons/flask-conical';
 
 	let { data } = $props();
 	let statuses: SelectPartialStatus[] = $state([]);
@@ -202,10 +202,7 @@
 								<code class="h-fit text-sm">{alert.target}</code>
 							</div>
 							<div class="flex justify-end">
-								<Button variant="outline" class="w-28">
-									Test
-									<FlaskConical class="ml-2 size-4" />
-								</Button>
+								<SiteAlertTest bind:websiteId={data.website.id} />
 							</div>
 						</div>
 					{:else}
