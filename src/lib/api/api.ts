@@ -12,6 +12,7 @@ import { projectsRouter } from './projects/projects.controller';
 import { websitesRouter } from './websites/websites.controller';
 import { statusRouter } from './status/status.controller';
 import { messagesRouter } from './messages/messages.controller';
+import { alertsRouter } from './alerts/alerts.controller';
 
 export const api = new Hono().basePath('/api');
 
@@ -23,6 +24,7 @@ api.route('/projects', projectsRouter);
 api.route('/websites', websitesRouter);
 api.route('/status', statusRouter);
 api.route('/messages', messagesRouter);
+api.route('/alerts', alertsRouter);
 
 function getAuthConfig(): AuthConfig {
 	return {
