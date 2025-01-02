@@ -257,7 +257,7 @@ export type SelectAlertPartial = Pick<
 >;
 export type SelectAlertLogsPartial = Pick<
 	SelectAlertLog,
-	'id' | 'websiteId' | 'status' | 'createdAt' | 'message'
+	'id' | 'websiteId' | 'status' | 'createdAt' | 'message' | 'error' | 'sent'
 >;
 
 // Zod Schemas
