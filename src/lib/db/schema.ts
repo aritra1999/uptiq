@@ -100,9 +100,13 @@ export const alerts = pgTable('alerts', {
 	id: uuid('id').primaryKey().defaultRandom(),
 	websiteId: uuid('website_id')
 		.notNull()
-		.references(() => websites.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+		.references(() => websites.id, { onDelete: 'cascade', onUpdate: 'cascade' })
+		.unique(), // This ensures one alert per website
+	userId: text('user_id') // Add user column
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
 	type: varchar('type', { length: 25 }).notNull(),
-	target: varchar('target', { length: 255 }).notNull(), // email, webhook URL, etc
+	target: varchar('target', { length: 255 }).notNull(),
 	enabled: boolean('enabled').notNull().default(true),
 	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 	updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
@@ -116,6 +120,9 @@ export const alertLogs = pgTable('alert_logs', {
 	websiteId: uuid('website_id')
 		.notNull()
 		.references(() => websites.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+	userId: text('user_id') // Add user column
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
 	status: statusEnum('status').notNull(), // The status that triggered the alert
 	sent: boolean('sent').notNull().default(false), // Whether the alert was successfully sent
 	error: varchar('error', { length: 255 }), // Optional error message if alert failed
@@ -141,7 +148,9 @@ export const messages = pgTable('messages', {
 export const usersRelations = relations(users, ({ many }) => ({
 	projects: many(projects),
 	websites: many(websites),
-	messages: many(messages)
+	messages: many(messages),
+	alerts: many(alerts), // Add alerts relation
+	alertLogs: many(alertLogs) // Add alertLogs relation
 }));
 
 export const projectsRelations = relations(projects, ({ one, many }) => ({
@@ -178,6 +187,10 @@ export const alertsRelations = relations(alerts, ({ one }) => ({
 	website: one(websites, {
 		fields: [alerts.websiteId],
 		references: [websites.id]
+	}),
+	user: one(users, {
+		fields: [alerts.userId],
+		references: [users.id]
 	})
 }));
 
@@ -200,6 +213,11 @@ export const alertLogsRelations = relations(alertLogs, ({ one }) => ({
 	website: one(websites, {
 		fields: [alertLogs.websiteId],
 		references: [websites.id]
+	}),
+	user: one(users, {
+		// Add user relation
+		fields: [alertLogs.userId],
+		references: [users.id]
 	})
 }));
 
@@ -232,7 +250,7 @@ export type SelectMessagePartial = Pick<
 	SelectMessage,
 	'id' | 'title' | 'content' | 'startTime' | 'websiteId'
 >;
-export type SelectAlertPartial = Pick<SelectAlert, 'id' | 'target' | 'enabled'>;
+export type SelectAlertPartial = Pick<SelectAlert, 'id' | 'websiteId' | 'target' | 'enabled'>;
 
 // Zod Schemas
 export const InsertProjectSchema = createInsertSchema(projects);

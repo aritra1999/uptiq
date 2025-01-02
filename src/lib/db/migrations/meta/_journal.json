@@ -36,6 +36,20 @@
       "when": 1735597728526,
       "tag": "0004_low_junta",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1735825277900,
+      "tag": "0005_great_chimera",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1735826909660,
+      "tag": "0006_cold_anthem",
+      "breakpoints": true
     }
   ]
 }
