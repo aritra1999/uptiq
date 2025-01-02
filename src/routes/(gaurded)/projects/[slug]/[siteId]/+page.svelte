@@ -10,26 +10,48 @@
 	import StatusAvailability from '$lib/components/ui/status/status-availability.svelte';
 	import StatusPerformance from '$lib/components/ui/status/status-performance.svelte';
 	import StatusBadge from '$lib/components/ui/status/status-badge.svelte';
-	import type { SelectMessagePartial, SelectPartialStatus } from '$lib/db/schema';
+	import type {
+		SelectAlertLog,
+		SelectAlertPartial,
+		SelectMessagePartial,
+		SelectPartialStatus
+	} from '$lib/db/schema';
+	import Check from 'lucide-svelte/icons/check';
+	import X from 'lucide-svelte/icons/x';
 	import { onMount } from 'svelte';
-	import { messageStore, selectedMessageStore } from '$lib/store/message.store';
 	import EllipsisVertical from 'lucide-svelte/icons/ellipsis-vertical';
+	import { messageStore, selectedMessageStore } from '$lib/store/message.store';
 	import { Button } from '$lib/components/ui/button';
 	import { prettifyDate } from '$lib/utils';
+	import SiteAlertForm from '$lib/components/ui/site-alert/site-alert-form.svelte';
+	import SiteAlertDelete from '$lib/components/ui/site-alert/site-alert-delete.svelte';
+	import SiteAlertTest from '$lib/components/ui/site-alert/site-alert-test.svelte';
+	import { Badge } from '$lib/components/ui/badge';
+	import { statusColorMap } from '$lib/components/ui/status/constants.js';
 
 	let { data } = $props();
 	let statuses: SelectPartialStatus[] = $state([]);
+	let alert: SelectAlertPartial | null = $state(null);
+	let alertLogs: SelectAlertLog[] = $state([]);
+
 	let loadingStatus = $state(true);
 	let loadingMessages = $state(true);
+	let loadingAlerts = $state(true);
+	let loadingAlertLogs = $state(true);
 
 	let showMessageFormDialog = $state(false);
 	let showDeleteMessageDialog = $state(false);
+	let showAlertFormDialog = $state(false);
+	let showDeleteAlertDialog = $state(false);
 
 	onMount(async () => {
 		if (!data.website) return;
 
-		statuses = await fetch(`/api/status/${data.website.id}?limit=150`)
+		await fetch(`/api/status/${data.website.id}?limit=150`)
 			.then(async (res) => await res.json())
+			.then((statusRes) => {
+				statuses = statusRes;
+			})
 			.catch((err: Error) => {
 				console.log(err);
 				return [];
@@ -37,7 +59,6 @@
 			.finally(() => {
 				loadingStatus = false;
 			});
-
 		await fetch(`/api/messages?websiteId=${data.website.id}`)
 			.then((res: Response) => res.json())
 			.then((messages: SelectMessagePartial[]) => {
@@ -55,25 +76,43 @@
 			.finally(() => {
 				loadingMessages = false;
 			});
+		await fetch(`/api/alerts?websiteId=${data.website.id}`)
+			.then((res: Response) => res.json())
+			.then((alerts: SelectAlertPartial[]) => {
+				if (!alerts) return null;
+				console.log(alerts);
+				alert = alerts[0];
+			})
+			.catch((err: Error) => {
+				console.log(err);
+				return null;
+			})
+			.finally(() => {
+				loadingAlerts = false;
+			});
+		await fetch(`/api/alerts/logs/${data.website.id}`)
+			.then(async (res: Response) => await res.json())
+			.then((logs: SelectAlertLog[]) => {
+				alertLogs = logs;
+			})
+			.catch((err: Error) => {
+				console.log(err);
+				return null;
+			})
+			.finally(() => {
+				loadingAlertLogs = false;
+			});
 	});
 </script>
 
 {#if data.website}
 	<section class="flex items-center justify-between">
 		<Header title={data.website.name} description={data.website.url} />
-		<Button
-			onclick={() => {
-				showMessageFormDialog = true;
-				selectedMessageStore.set(null);
-			}}
-		>
-			Add Message
-		</Button>
 	</section>
-	<section>
-		<Card.Root class="mb-6 p-6">
+	<section class="mb-6 flex gap-6">
+		<Card.Root class="h-80 w-2/3 p-6">
 			{#if loadingStatus}
-				<p class="p-2 text-center">Loading statuses...</p>
+				<p class="p-2">Loading statuses...</p>
 			{:else if statuses.length === 0}
 				<p class="p-2 text-center">No status found.</p>
 			{:else if !loadingStatus && statuses.length > 0}
@@ -96,9 +135,98 @@
 				</div>
 			{/if}
 		</Card.Root>
+		<Card.Root class="w-1/3 p-6">
+			{#if loadingAlerts}
+				<p class="p-2">Loading alert...</p>
+			{:else}
+				<div class="flex items-center justify-between">
+					<h3 class="text-2xl">Alert</h3>
+					<div>
+						<Button onclick={() => (showAlertFormDialog = true)}>
+							{alert ? 'Update' : 'Add'} Alerts
+						</Button>
+						{#if alert}
+							<DropdownMenu.Root>
+								<DropdownMenu.Trigger>
+									<Button size="icon" variant="ghost" class="h-8 w-8">
+										<EllipsisVertical class="h-3.5 w-3.5" />
+										<span class="sr-only">More</span>
+									</Button>
+								</DropdownMenu.Trigger>
+								<DropdownMenu.Content align="end">
+									<DropdownMenu.Item
+										onclick={() => {
+											showDeleteAlertDialog = true;
+										}}
+									>
+										Delete
+									</DropdownMenu.Item>
+								</DropdownMenu.Content>
+							</DropdownMenu.Root>
+						{/if}
+					</div>
+				</div>
+				<div class="flex h-full w-full justify-center pt-10">
+					{#if alert}
+						<div>
+							<div class="mb-6 flex items-center justify-between pl-2 capitalize">
+								<div>
+									<span class="text-muted-foreground">Type: </span>
+									{alert.type}
+								</div>
+								{#if alert.enabled}
+									<Badge
+										variant="outline"
+										class="border-none bg-opacity-20 px-3 py-1 font-medium"
+										style="background: {statusColorMap['up'] + '30'};"
+									>
+										<div
+											class="mr-2 h-2 w-2 rounded-full"
+											style="background: {statusColorMap['up']};"
+										></div>
+										Enabled
+									</Badge>
+								{:else}
+									<Badge
+										variant="outline"
+										class="border-none bg-opacity-20 px-3 py-1 font-medium"
+										style="background: {statusColorMap['down'] + '30'};"
+									>
+										<div
+											class="mr-2 h-2 w-2 rounded-full"
+											style="background: {statusColorMap['down']};"
+										></div>
+										Disabled
+									</Badge>
+								{/if}
+							</div>
+							<div class="mb-6 rounded-lg bg-sidebar px-4 py-2">
+								<code class="h-fit text-sm">{alert.target}</code>
+							</div>
+							<div class="flex justify-end">
+								<SiteAlertTest bind:websiteId={data.website.id} />
+							</div>
+						</div>
+					{:else}
+						<p class="pt-10">No alert found!</p>
+					{/if}
+				</div>
+			{/if}
+		</Card.Root>
 	</section>
-	<section>
-		<Card.Root class="p-2">
+	<section class="mb-6">
+		<div class="mb-6 flex items-center justify-between">
+			<h3 class="text-2xl">Messages</h3>
+			<Button
+				onclick={() => {
+					showMessageFormDialog = true;
+					selectedMessageStore.set(null);
+				}}
+			>
+				Add Message
+			</Button>
+		</div>
+		<Card.Root class=" p-2">
 			{#if loadingMessages}
 				<p class="p-6 text-center">Loading messages...</p>
 			{:else if $messageStore && $messageStore.size > 0}
@@ -160,6 +288,61 @@
 			{/if}
 		</Card.Root>
 	</section>
+	<section>
+		<div class="mb-6 flex items-center justify-between">
+			<h3 class="text-2xl">
+				Alert Logs
+				<span class="text-base text-muted-foreground">(last 7 days)</span>
+			</h3>
+		</div>
+		<Card.Root class="mb-6 p-2">
+			{#if loadingAlertLogs}
+				<p class="p-6 text-center">Loading aleert logs for the last 7 days...</p>
+			{:else if alertLogs.length > 0}
+				<Table.Root>
+					<Table.Header>
+						<Table.Row>
+							<Table.Head>Sent</Table.Head>
+							<Table.Head>Message</Table.Head>
+							<Table.Head>Status</Table.Head>
+							<Table.Head>Error</Table.Head>
+							<Table.Head>Triggered at</Table.Head>
+						</Table.Row>
+					</Table.Header>
+					<Table.Body>
+						{#each alertLogs as { message, sent, status, createdAt, error }}
+							<Table.Row>
+								<Table.Cell class="flex w-12 justify-center">
+									{#if sent}
+										<div class="flex size-4 items-center justify-center rounded-full bg-green-500">
+											<Check class="size-3 text-white" />
+										</div>
+									{:else}
+										<div class="flex size-4 items-center justify-center rounded-full bg-red-500">
+											<X class="size-3 text-white" />
+										</div>
+									{/if}
+								</Table.Cell>
+								<Table.Cell>{message}</Table.Cell>
+								<Table.Cell>
+									<StatusBadge {status} />
+								</Table.Cell>
+								<Table.Cell>
+									{#if error}
+										<code class="rounded-sm bg-sidebar px-2 py-1">{error}</code>
+									{/if}
+								</Table.Cell>
+								<Table.Cell class="w-60">{prettifyDate(new Date(createdAt))}</Table.Cell>
+							</Table.Row>
+						{/each}
+					</Table.Body>
+				</Table.Root>
+			{:else}
+				<p class="p-6 text-center">No alert logs found for the last 7 days.</p>
+			{/if}
+		</Card.Root>
+	</section>
+
 	<Dialog.Root bind:open={showMessageFormDialog}>
 		<Dialog.Content>
 			<Dialog.Header>
@@ -183,6 +366,30 @@
 				</Dialog.Description>
 			</Dialog.Header>
 			<MessageDelete bind:showDeleteMessageDialog />
+		</Dialog.Content>
+	</Dialog.Root>
+
+	<Dialog.Root bind:open={showAlertFormDialog}>
+		<Dialog.Content>
+			<Dialog.Header>
+				<Dialog.Title>{alert ? 'Update' : 'Add'} Alert</Dialog.Title>
+				<Dialog.Description>
+					{alert ? 'Update the details of this alert.' : 'Enter the details for a new alert.'}
+				</Dialog.Description>
+			</Dialog.Header>
+			<SiteAlertForm bind:showAlertFormDialog bind:alert bind:websiteId={data.website.id} />
+		</Dialog.Content>
+	</Dialog.Root>
+
+	<Dialog.Root bind:open={showDeleteAlertDialog}>
+		<Dialog.Content>
+			<Dialog.Header>
+				<Dialog.Title>Delete Message</Dialog.Title>
+				<Dialog.Description>
+					Are you sure you want to delete this alert? This action cannot be undone.
+				</Dialog.Description>
+			</Dialog.Header>
+			<SiteAlertDelete bind:showDeleteAlertDialog bind:alert />
 		</Dialog.Content>
 	</Dialog.Root>
 {/if}

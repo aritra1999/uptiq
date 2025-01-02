@@ -29,6 +29,34 @@
       "when": 1735323021393,
       "tag": "0003_red_mephisto",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1735597728526,
+      "tag": "0004_low_junta",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1735825277900,
+      "tag": "0005_great_chimera",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1735826909660,
+      "tag": "0006_cold_anthem",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1735830932193,
+      "tag": "0007_strange_fallen_one",
+      "breakpoints": true
     }
   ]
 }
