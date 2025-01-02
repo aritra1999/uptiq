@@ -16,9 +16,11 @@
 		SelectMessagePartial,
 		SelectPartialStatus
 	} from '$lib/db/schema';
+	import Check from 'lucide-svelte/icons/check';
+	import X from 'lucide-svelte/icons/x';
 	import { onMount } from 'svelte';
-	import { messageStore, selectedMessageStore } from '$lib/store/message.store';
 	import EllipsisVertical from 'lucide-svelte/icons/ellipsis-vertical';
+	import { messageStore, selectedMessageStore } from '$lib/store/message.store';
 	import { Button } from '$lib/components/ui/button';
 	import { prettifyDate } from '$lib/utils';
 	import SiteAlertForm from '$lib/components/ui/site-alert/site-alert-form.svelte';
@@ -167,7 +169,7 @@
 				<div class="flex h-full w-full justify-center pt-10">
 					{#if alert}
 						<div>
-							<div class="mb-6 flex items-center justify-between pr-2 capitalize">
+							<div class="mb-6 flex items-center justify-between pl-2 capitalize">
 								<div>
 									<span class="text-muted-foreground">Type: </span>
 									{alert.type}
@@ -301,15 +303,35 @@
 					<Table.Header>
 						<Table.Row>
 							<Table.Head>Sent</Table.Head>
+							<Table.Head>Message</Table.Head>
 							<Table.Head>Status</Table.Head>
-							<Table.Head>Created at</Table.Head>
+							<Table.Head>Error</Table.Head>
+							<Table.Head>Triggered at</Table.Head>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{#each alertLogs as { sent, status, createdAt }}
+						{#each alertLogs as { message, sent, status, createdAt, error }}
 							<Table.Row>
-								<Table.Cell class="w-52">{sent}</Table.Cell>
-								<Table.Cell>{status}</Table.Cell>
+								<Table.Cell class="flex w-12 justify-center">
+									{#if sent}
+										<div class="flex size-4 items-center justify-center rounded-full bg-green-500">
+											<Check class="size-3 text-white" />
+										</div>
+									{:else}
+										<div class="flex size-4 items-center justify-center rounded-full bg-red-500">
+											<X class="size-3 text-white" />
+										</div>
+									{/if}
+								</Table.Cell>
+								<Table.Cell>{message}</Table.Cell>
+								<Table.Cell>
+									<StatusBadge {status} />
+								</Table.Cell>
+								<Table.Cell>
+									{#if error}
+										<code class="rounded-sm bg-sidebar px-2 py-1">{error}</code>
+									{/if}
+								</Table.Cell>
 								<Table.Cell class="w-60">{prettifyDate(new Date(createdAt))}</Table.Cell>
 							</Table.Row>
 						{/each}
