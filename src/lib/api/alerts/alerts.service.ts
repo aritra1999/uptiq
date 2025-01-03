@@ -6,7 +6,7 @@ import {
 	type SelectAlertPartial,
 	type SelectAlertLogsPartial
 } from '$lib/db/schema';
-import { and, eq, gte } from 'drizzle-orm';
+import { and, desc, eq, gte } from 'drizzle-orm';
 import type { ServiceResponse } from '../types';
 import type { StatusCode } from 'hono/utils/http-status';
 import { prettifyErrors } from '$lib/db/utils';
@@ -175,6 +175,7 @@ export const getAlertLogs = async (
 				gte(alertLogs.createdAt, oneWeekAgo)
 			)
 		)
+		.orderBy(desc(alertLogs.createdAt))
 		.then((response) => {
 			return {
 				status: 200 as StatusCode,
