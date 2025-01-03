@@ -80,7 +80,6 @@
 			.then((res: Response) => res.json())
 			.then((alerts: SelectAlertPartial[]) => {
 				if (!alerts) return null;
-				console.log(alerts);
 				alert = alerts[0];
 			})
 			.catch((err: Error) => {
