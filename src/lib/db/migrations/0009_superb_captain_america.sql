@@ -1,0 +1,1 @@
+ALTER TABLE "alert_logs" RENAME COLUMN "status" TO "website_status";
