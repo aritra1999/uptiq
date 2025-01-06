@@ -134,7 +134,7 @@
 				</div>
 			{/if}
 		</Card.Root>
-		<Card.Root class="w-full p-6 sm:w-1/2 md:w-1/3">
+		<Card.Root class="h-80 w-full p-6 sm:w-1/2 md:w-1/3">
 			{#if loadingAlerts}
 				<p class="p-2">Loading alert...</p>
 			{:else}
@@ -175,7 +175,7 @@
 				<div class="flex h-full w-full justify-center">
 					{#if alert}
 						<div class="w-full">
-							<div class="mb-6 space-y-3">
+							<div class="mb-10 space-y-3">
 								<div class="flex items-center justify-between">
 									<div class="text-muted-foreground">Type:</div>
 									<div class="capitalize">{alert.type}</div>
@@ -211,12 +211,12 @@
 									</div>
 								</div>
 							</div>
-							<div class="mb-6 rounded-lg bg-secondary px-4 py-2">
-								<div class="text-muted-foreground">Target:</div>
+							<div class="rounded-lg bg-secondary p-4 pt-3">
+								<div class="flex items-center justify-between">
+									<div class="mb-2 text-sm text-muted-foreground">Target</div>
+									<SiteAlertTest bind:websiteId={data.website.id} bind:alertLogs />
+								</div>
 								<code class="block h-fit max-w-[400px] truncate text-sm">{alert.target}</code>
-							</div>
-							<div class="flex justify-end">
-								<SiteAlertTest bind:websiteId={data.website.id} bind:alertLogs />
 							</div>
 						</div>
 					{:else}
@@ -345,7 +345,9 @@
 								</Table.Cell>
 								<Table.Cell>
 									{#if error}
-										<code class="rounded-sm bg-sidebar px-2 py-1">{error}</code>
+										<code class="max-w-[400px] truncate rounded-sm bg-sidebar px-2 py-1">
+											{error}
+										</code>
 									{/if}
 								</Table.Cell>
 								<Table.Cell class="w-60">{prettifyDate(new Date(createdAt))}</Table.Cell>
