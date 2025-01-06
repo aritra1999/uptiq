@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
-	import FlaskConical from 'lucide-svelte/icons/flask-conical';
 	import LoaderCircle from 'lucide-svelte/icons/loader-circle';
 	import { toast } from 'svelte-sonner';
 
@@ -26,11 +25,10 @@
 	};
 </script>
 
-<Button variant="secondary" class="w-full" onclick={triggerTestAlert} disabled={loading}>
+<Button variant="link" class="py-0 pb-2" onclick={triggerTestAlert} disabled={loading}>
 	{#if loading}
 		<LoaderCircle class="mr-2 size-5 animate-spin" />
 	{:else}
 		Test
-		<FlaskConical class="ml-2 size-4" />
 	{/if}
 </Button>
