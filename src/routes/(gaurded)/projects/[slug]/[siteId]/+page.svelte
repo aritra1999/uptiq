@@ -80,7 +80,6 @@
 			.then((res: Response) => res.json())
 			.then((alerts: SelectAlertPartial[]) => {
 				if (!alerts) return null;
-				console.log(alerts);
 				alert = alerts[0];
 			})
 			.catch((err: Error) => {
@@ -109,12 +108,12 @@
 	<section class="flex items-center justify-between">
 		<Header title={data.website.name} description={data.website.url} />
 	</section>
-	<section class="mb-6 flex gap-6">
-		<Card.Root class="h-80 w-2/3 p-6">
+	<section class="mb-6 flex flex-col gap-6 sm:flex-row">
+		<Card.Root class="h-80 w-full p-6 sm:w-1/2 md:w-2/3">
 			{#if loadingStatus}
 				<p class="p-2">Loading statuses...</p>
 			{:else if statuses.length === 0}
-				<p class="p-2 text-center">No status found.</p>
+				<p class="p-2">No status found!</p>
 			{:else if !loadingStatus && statuses.length > 0}
 				<div class="mb-4 flex items-start justify-between">
 					<div class="grid w-96 grid-cols-2 gap-2 divide-x rounded-lg border">
@@ -135,16 +134,13 @@
 				</div>
 			{/if}
 		</Card.Root>
-		<Card.Root class="w-1/3 p-6">
+		<Card.Root class="h-80 w-full p-6 sm:w-1/2 md:w-1/3">
 			{#if loadingAlerts}
 				<p class="p-2">Loading alert...</p>
 			{:else}
-				<div class="flex items-center justify-between">
+				<div class="mb-3 flex items-center justify-between border-b pb-3">
 					<h3 class="text-2xl">Alert</h3>
 					<div>
-						<Button onclick={() => (showAlertFormDialog = true)}>
-							{alert ? 'Update' : 'Add'} Alerts
-						</Button>
 						{#if alert}
 							<DropdownMenu.Root>
 								<DropdownMenu.Trigger>
@@ -156,6 +152,14 @@
 								<DropdownMenu.Content align="end">
 									<DropdownMenu.Item
 										onclick={() => {
+											showAlertFormDialog = true;
+										}}
+									>
+										Edit
+									</DropdownMenu.Item>
+									<DropdownMenu.Separator />
+									<DropdownMenu.Item
+										onclick={() => {
 											showDeleteAlertDialog = true;
 										}}
 									>
@@ -163,48 +167,56 @@
 									</DropdownMenu.Item>
 								</DropdownMenu.Content>
 							</DropdownMenu.Root>
+						{:else}
+							<Button onclick={() => (showAlertFormDialog = true)}>Add Alerts</Button>
 						{/if}
 					</div>
 				</div>
-				<div class="flex h-full w-full justify-center pt-10">
+				<div class="flex h-full w-full justify-center">
 					{#if alert}
-						<div>
-							<div class="mb-6 flex items-center justify-between pl-2 capitalize">
-								<div>
-									<span class="text-muted-foreground">Type: </span>
-									{alert.type}
+						<div class="w-full">
+							<div class="mb-10 space-y-3">
+								<div class="flex items-center justify-between">
+									<div class="text-muted-foreground">Type:</div>
+									<div class="capitalize">{alert.type}</div>
 								</div>
-								{#if alert.enabled}
-									<Badge
-										variant="outline"
-										class="border-none bg-opacity-20 px-3 py-1 font-medium"
-										style="background: {statusColorMap['up'] + '30'};"
-									>
-										<div
-											class="mr-2 h-2 w-2 rounded-full"
-											style="background: {statusColorMap['up']};"
-										></div>
-										Enabled
-									</Badge>
-								{:else}
-									<Badge
-										variant="outline"
-										class="border-none bg-opacity-20 px-3 py-1 font-medium"
-										style="background: {statusColorMap['down'] + '30'};"
-									>
-										<div
-											class="mr-2 h-2 w-2 rounded-full"
-											style="background: {statusColorMap['down']};"
-										></div>
-										Disabled
-									</Badge>
-								{/if}
+								<div class="flex items-center justify-between">
+									<div class="text-muted-foreground">Status:</div>
+									<div class="capitalize">
+										{#if alert.enabled}
+											<Badge
+												variant="outline"
+												class="border-none bg-opacity-20 px-3 py-1 text-xs font-medium"
+												style="background: {statusColorMap['up'] + '30'};"
+											>
+												<div
+													class="mr-2 h-2 w-2 rounded-full"
+													style="background: {statusColorMap['up']};"
+												></div>
+												Enabled
+											</Badge>
+										{:else}
+											<Badge
+												variant="outline"
+												class="border-none bg-opacity-20 px-3 py-1 font-medium"
+												style="background: {statusColorMap['down'] + '30'};"
+											>
+												<div
+													class="mr-2 h-2 w-2 rounded-full"
+													style="background: {statusColorMap['down']};"
+												></div>
+												Disabled
+											</Badge>
+										{/if}
+									</div>
+								</div>
 							</div>
-							<div class="mb-6 rounded-lg bg-sidebar px-4 py-2">
-								<code class="h-fit text-sm">{alert.target}</code>
-							</div>
-							<div class="flex justify-end">
-								<SiteAlertTest bind:websiteId={data.website.id} />
+							<div class="rounded-lg bg-secondary p-4 pt-3">
+								<div class="flex items-center justify-between">
+									<div class="mb-2 text-sm text-muted-foreground">Target</div>
+									<SiteAlertTest bind:websiteId={data.website.id} bind:alertLogs />
+								</div>
+								<code class="block h-fit max-w-[400px] truncate text-sm">{alert.target}</code>
 							</div>
 						</div>
 					{:else}
@@ -304,13 +316,14 @@
 						<Table.Row>
 							<Table.Head>Sent</Table.Head>
 							<Table.Head>Message</Table.Head>
-							<Table.Head>Status</Table.Head>
+							<Table.Head>Site Status</Table.Head>
+							<Table.Head>Webhook Status</Table.Head>
 							<Table.Head>Error</Table.Head>
 							<Table.Head>Triggered at</Table.Head>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{#each alertLogs as { message, sent, status, createdAt, error }}
+						{#each alertLogs as { message, sent, websiteStatus, webhookStatus, createdAt, error }}
 							<Table.Row>
 								<Table.Cell class="flex w-12 justify-center">
 									{#if sent}
@@ -325,11 +338,16 @@
 								</Table.Cell>
 								<Table.Cell>{message}</Table.Cell>
 								<Table.Cell>
-									<StatusBadge {status} />
+									<StatusBadge status={websiteStatus} />
+								</Table.Cell>
+								<Table.Cell>
+									{webhookStatus}
 								</Table.Cell>
 								<Table.Cell>
 									{#if error}
-										<code class="rounded-sm bg-sidebar px-2 py-1">{error}</code>
+										<code class="max-w-[400px] truncate rounded-sm bg-sidebar px-2 py-1">
+											{error}
+										</code>
 									{/if}
 								</Table.Cell>
 								<Table.Cell class="w-60">{prettifyDate(new Date(createdAt))}</Table.Cell>

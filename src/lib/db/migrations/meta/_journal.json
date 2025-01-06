@@ -57,6 +57,20 @@
       "when": 1735830932193,
       "tag": "0007_strange_fallen_one",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1736170480167,
+      "tag": "0008_productive_scalphunter",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1736171264963,
+      "tag": "0009_superb_captain_america",
+      "breakpoints": true
     }
   ]
 }

@@ -125,7 +125,8 @@ export const testAlertController = async (context: Context) => {
 	if (!website) return context.json({ error: 'Website not found' }, 404);
 
 	const apiKey = SECRET_EDGE_API_KEY;
-	const alert = await fetch(`${EDGE_URL}/api/alert`, {
+
+	return await fetch(`${EDGE_URL}/api/alert`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -136,9 +137,19 @@ export const testAlertController = async (context: Context) => {
 			status: 'up',
 			message: `Testing trigger, timestamp: ${new Date().toISOString()}`
 		})
-	}).then((res) => res.json());
+	})
+		.then(async (res) => {
+			const resBody = await res.json();
 
-	return context.json(alert);
+			if (!res.ok) {
+				return context.json({ error: resBody.error ?? 'Failed to trigger alert!' }, 500);
+			}
+
+			return context.json(resBody, 200);
+		})
+		.catch((err) => {
+			return context.json({ error: err.message }, 500);
+		});
 };
 
 const PartialInsertAlertSchema = InsertAlertSchema.pick({

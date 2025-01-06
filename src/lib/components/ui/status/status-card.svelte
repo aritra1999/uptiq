@@ -13,7 +13,7 @@
 	import { cn } from '$lib/utils';
 
 	let {
-		classProps,
+		classProps = '',
 		websiteId,
 		showWebsiteFormDialog = $bindable(),
 		showDeleteWebsiteDialog = $bindable(),
@@ -93,11 +93,11 @@
 				<StatusAvailability {statuses} />
 				<StatusPerformance {statuses} />
 			</div>
-			<div class="p-2">
+			<div class="h-24 p-2">
 				{#if statuses.length > 0}
 					<StatusPageChart {statuses} />
 				{:else}
-					No data available! :(
+					<div class="py-4 text-center">No data available! :(</div>
 				{/if}
 			</div>
 		{:else}

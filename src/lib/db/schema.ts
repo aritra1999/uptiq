@@ -123,9 +123,10 @@ export const alertLogs = pgTable('alert_logs', {
 	userId: text('user_id') // Add user column
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-	status: statusEnum('status').notNull(), // The status that triggered the alert
-	message: varchar('message', { length: 400 }),
+	websiteStatus: statusEnum('website_status').notNull(), // The status that triggered the alert
+	webhookStatus: integer('webhook_status'), // The status of the webhook request
 	sent: boolean('sent').notNull().default(false), // Whether the alert was successfully sent
+	message: varchar('message', { length: 400 }),
 	error: varchar('error', { length: 255 }), // Optional error message if alert failed
 	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
 });
@@ -257,7 +258,14 @@ export type SelectAlertPartial = Pick<
 >;
 export type SelectAlertLogsPartial = Pick<
 	SelectAlertLog,
-	'id' | 'websiteId' | 'status' | 'createdAt' | 'message' | 'error' | 'sent'
+	| 'id'
+	| 'websiteId'
+	| 'websiteStatus'
+	| 'webhookStatus'
+	| 'createdAt'
+	| 'message'
+	| 'error'
+	| 'sent'
 >;
 
 // Zod Schemas
