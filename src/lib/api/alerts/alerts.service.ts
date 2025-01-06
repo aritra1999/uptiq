@@ -22,7 +22,8 @@ export const selectAlertPartialObject = {
 export const selectAlertLogsPartialObject = {
 	id: alertLogs.id,
 	websiteId: alertLogs.websiteId,
-	status: alertLogs.status,
+	websiteStatus: alertLogs.websiteStatus,
+	webhookStatus: alertLogs.webhookStatus,
 	sent: alertLogs.sent,
 	error: alertLogs.error,
 	createdAt: alertLogs.createdAt,
