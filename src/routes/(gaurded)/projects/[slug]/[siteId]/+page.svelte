@@ -113,7 +113,7 @@
 			{#if loadingStatus}
 				<p class="p-2">Loading statuses...</p>
 			{:else if statuses.length === 0}
-				<p class="p-2 text-center">No status found.</p>
+				<p class="p-2">No status found!</p>
 			{:else if !loadingStatus && statuses.length > 0}
 				<div class="mb-4 flex items-start justify-between">
 					<div class="grid w-96 grid-cols-2 gap-2 divide-x rounded-lg border">
