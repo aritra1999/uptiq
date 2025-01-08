@@ -53,7 +53,7 @@ export const users = pgTable('users', {
 	id: text('id').notNull().unique().primaryKey(),
 	name: varchar('name', { length: 25 }),
 	pro: boolean('pro').default(false),
-	stripeId: varchar('stripe_id', { length: 255 }),
+	stripeSubscriptionId: varchar('stripe_subsription_id', { length: 255 }),
 	username: varchar('username', { length: 39 }).notNull().unique(),
 	email: varchar('email', { length: 255 }).notNull().unique(),
 	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
