@@ -1,5 +1,5 @@
 import { db } from '$lib/db/drizzle';
-import { users, type InsertUser } from '$lib/db/schema';
+import { users, type InsertUser, type SelectUser } from '$lib/db/schema';
 import { eq } from 'drizzle-orm';
 
 export const isUserPro = async (id: string): Promise<boolean> => {
@@ -15,6 +15,15 @@ export const checkUserExists = async (id: string): Promise<boolean> => {
 export const createUser = async (user: InsertUser) => {
 	const result = await db.insert(users).values(user).returning({ id: users.id });
 	return result[0];
+};
+
+export const getUser = async (userId: string): Promise<SelectUser> => {
+	return await db
+		.select()
+		.from(users)
+		.where(eq(users.id, userId))
+		.limit(1)
+		.then((response) => response[0]);
 };
 
 export const ensureUser = async (user: InsertUser): Promise<void> => {
