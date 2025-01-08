@@ -5,6 +5,7 @@ import { isUserPro } from '../user/user.service';
 import type { ServiceResponse } from '../types';
 import { prettifyErrors } from '$lib/db/utils';
 import type { StatusCode } from 'hono/utils/http-status';
+import { MAX_PROJECTS_FREE } from '../costants';
 
 export const canUserCreateProject = async (userId: string): Promise<boolean> => {
 	if (await isUserPro(userId)) return true;
@@ -14,7 +15,7 @@ export const canUserCreateProject = async (userId: string): Promise<boolean> => 
 		.from(projects)
 		.where(eq(projects.userId, userId));
 
-	return projectsCount[0].count < 2;
+	return projectsCount[0].count < MAX_PROJECTS_FREE;
 };
 
 export const getAllProjects = async (userId: string): Promise<SelectProjectPartial[]> => {

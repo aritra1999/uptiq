@@ -53,6 +53,7 @@ export const users = pgTable('users', {
 	id: text('id').notNull().unique().primaryKey(),
 	name: varchar('name', { length: 25 }),
 	pro: boolean('pro').default(false),
+	stripeSubscriptionId: varchar('stripe_subsription_id', { length: 255 }),
 	username: varchar('username', { length: 39 }).notNull().unique(),
 	email: varchar('email', { length: 255 }).notNull().unique(),
 	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
@@ -80,6 +81,7 @@ export const websites = pgTable('websites', {
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
 	url: varchar('url', { length: 2083 }).notNull(),
+	paused: boolean('paused').notNull().default(false),
 	name: varchar('name', { length: 25 }).notNull(),
 	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 	updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
@@ -232,6 +234,7 @@ export type InsertAlert = typeof alerts.$inferInsert;
 export type InsertAlertLog = typeof alertLogs.$inferInsert;
 
 // Select types
+export type SelectUser = typeof users.$inferSelect;
 export type SelectUptimeCheck = typeof uptimeChecks.$inferSelect;
 export type SelectProject = typeof projects.$inferSelect;
 export type SelectWebsite = typeof websites.$inferSelect;

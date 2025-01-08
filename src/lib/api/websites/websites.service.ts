@@ -6,6 +6,7 @@ import type { StatusCode } from 'hono/utils/http-status';
 import { isUserPro } from '../user/user.service';
 import { prettifyErrors } from '$lib/db/utils';
 import { getProjectBySlug } from '../projects/projects.service';
+import { MAX_WEBSITES_PER_PROJECT_FREE } from '../costants';
 
 export const canProjectHaveMoreWebsite = async (
 	userId: string,
@@ -13,7 +14,7 @@ export const canProjectHaveMoreWebsite = async (
 ): Promise<boolean> => {
 	if (await isUserPro(userId)) return true;
 
-	return (await getWebsiteCount(projectId)) < 2;
+	return (await getWebsiteCount(projectId)) < MAX_WEBSITES_PER_PROJECT_FREE;
 };
 
 export const getWebsiteCount = async (projectId: string): Promise<number> => {

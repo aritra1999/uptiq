@@ -65,14 +65,12 @@
 					</DropdownMenu.Group>
 					<DropdownMenu.Separator />
 					<DropdownMenu.Group>
-						<DropdownMenu.Item disabled>
-							<BadgeCheck />
-							Account
-						</DropdownMenu.Item>
-						<DropdownMenu.Item disabled>
-							<CreditCard />
-							Billing
-						</DropdownMenu.Item>
+						<a href="/billing">
+							<DropdownMenu.Item>
+								<CreditCard />
+								Account & Billing
+							</DropdownMenu.Item>
+						</a>
 						<DropdownMenu.Item disabled>
 							<Bell />
 							Notifications

@@ -1,0 +1,1 @@
+ALTER TABLE "users" RENAME COLUMN "stripe_id" TO "stripe_subsription_id";
