@@ -3,14 +3,31 @@
 	import Header from '$lib/components/ui/page/header.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import LoaderCircle from 'lucide-svelte/icons/loader-circle';
-	// import { toast } from 'svelte-sonner';
+	import { toast } from 'svelte-sonner';
 	import { PUBLIC_STRIPE_PAYMENT_LINK } from '$env/static/public';
 
 	let { data } = $props();
 	let loading = $state(false);
 
-	const handleCancel = () => {
-		console.log('Cancelling Pro subscription');
+	const handleCancel = async () => {
+		loading = true;
+		await fetch('/api/billing/cancel')
+			.then((res) => {
+				return res.json();
+			})
+			.then((data) => {
+				loading = false;
+				if (data.error) {
+					toast.error(data.error);
+					return;
+				}
+				location.reload();
+			})
+			.catch((err) => {
+				loading = false;
+				console.log(err);
+				toast.error('An error occurred. Please try again later.');
+			});
 	};
 </script>
 
@@ -75,7 +92,7 @@
 				{:else}
 					<Button
 						target="_blank"
-						href={`${PUBLIC_STRIPE_PAYMENT_LINK}?prefilled_email=${data.user.email}`}
+						href={`${PUBLIC_STRIPE_PAYMENT_LINK}?prefilled_email=${data.user.email}&prefilled_name=${data.user.name}`}
 						size="lg"
 					>
 						<Sparkles class="size-4" />
