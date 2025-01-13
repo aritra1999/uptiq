@@ -8,20 +8,27 @@ import { prettifyErrors } from '$lib/db/utils';
 import { getProjectBySlug } from '../projects/projects.service';
 import { MAX_WEBSITES_PER_PROJECT_FREE } from '../costants';
 
+export const selectPartialWebsiteObject = {
+	id: websites.id,
+	name: websites.name,
+	url: websites.url,
+	paused: websites.paused
+};
+
 export const canProjectHaveMoreWebsite = async (
 	userId: string,
 	projectId: string
 ): Promise<boolean> => {
 	if (await isUserPro(userId)) return true;
-
-	return (await getWebsiteCount(projectId)) < MAX_WEBSITES_PER_PROJECT_FREE;
+	return (await getActiveWebsiteCount(projectId)) < MAX_WEBSITES_PER_PROJECT_FREE;
 };
 
-export const getWebsiteCount = async (projectId: string): Promise<number> => {
+export const getActiveWebsiteCount = async (projectId: string): Promise<number> => {
+	const condition = and(eq(websites.projectId, projectId), eq(websites.paused, false));
 	return await db
 		.select({ count: count(websites.id) })
 		.from(websites)
-		.where(eq(websites.projectId, projectId))
+		.where(condition)
 		.then((response) => response[0].count);
 };
 
@@ -30,11 +37,7 @@ export const getWebsite = async (
 	websiteId: string
 ): Promise<ServiceResponse<SelectWebsitePartial>> => {
 	return await db
-		.select({
-			id: websites.id,
-			name: websites.name,
-			url: websites.url
-		})
+		.select(selectPartialWebsiteObject)
 		.from(websites)
 		.where(and(eq(websites.userId, userId), eq(websites.id, websiteId)))
 		.limit(1)
@@ -72,11 +75,7 @@ export const getWebsites = async (
 	}
 
 	return await db
-		.select({
-			id: websites.id,
-			name: websites.name,
-			url: websites.url
-		})
+		.select(selectPartialWebsiteObject)
 		.from(websites)
 		.where(and(...conditions))
 		.then((response) => {
@@ -135,17 +134,13 @@ export const createWebsite = async (
 	if (!(await canProjectHaveMoreWebsite(website.userId, website.projectId)))
 		return {
 			status: 403,
-			error: 'Hobby users can create 2 websites per project!'
+			error: 'Hobby users can create 2 active websites per project!'
 		};
 
 	return await db
 		.insert(websites)
 		.values(website)
-		.returning({
-			id: websites.id,
-			name: websites.name,
-			url: websites.url
-		})
+		.returning(selectPartialWebsiteObject)
 		.then((response) => {
 			return {
 				status: 200 as StatusCode,
@@ -165,15 +160,26 @@ export const updateWebsite = async (
 	websiteId: string,
 	updatedWebsite: InsertWebsite
 ): Promise<ServiceResponse<SelectWebsitePartial>> => {
+	if (updatedWebsite.paused === false) {
+		const projectId = await db
+			.select({ id: websites.projectId })
+			.from(websites)
+			.where(eq(websites.id, websiteId))
+			.limit(1)
+			.then((response) => response[0].id);
+
+		if (!(await canProjectHaveMoreWebsite(userId, projectId)))
+			return {
+				status: 403,
+				error: 'Hobby users can create 2 active websites per project!'
+			};
+	}
+
 	return await db
 		.update(websites)
 		.set(updatedWebsite)
 		.where(and(eq(websites.userId, userId), eq(websites.id, websiteId)))
-		.returning({
-			id: websites.id,
-			name: websites.name,
-			url: websites.url
-		})
+		.returning()
 		.then((response) => {
 			return {
 				status: 200 as StatusCode,

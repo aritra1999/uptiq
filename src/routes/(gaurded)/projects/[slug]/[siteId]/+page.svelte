@@ -28,6 +28,7 @@
 	import SiteAlertTest from '$lib/components/ui/site-alert/site-alert-test.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import { statusColorMap } from '$lib/components/ui/status/constants.js';
+	import TriangleAlert from 'lucide-svelte/icons/triangle-alert';
 
 	let { data } = $props();
 	let statuses: SelectPartialStatus[] = $state([]);
@@ -107,6 +108,11 @@
 {#if data.website}
 	<section class="flex items-center justify-between">
 		<Header title={data.website.name} description={data.website.url} />
+		{#if data.website.paused}
+			<Badge variant="destructive" class="text-lg">
+				<TriangleAlert class="mr-2 size-4" />Paused
+			</Badge>
+		{/if}
 	</section>
 	<section class="mb-6 flex flex-col gap-6 sm:flex-row">
 		<Card.Root class="h-80 w-full p-6 sm:w-1/2 md:w-2/3">

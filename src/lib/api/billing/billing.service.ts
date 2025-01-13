@@ -1,5 +1,5 @@
 import { db } from '$lib/db/drizzle';
-import { users } from '$lib/db/schema';
+import { users, websites } from '$lib/db/schema';
 import { eq } from 'drizzle-orm';
 
 export async function upgrageUserPlan(
@@ -10,8 +10,16 @@ export async function upgrageUserPlan(
 }
 
 export async function downgradeUserWithSubscription(stripeSubscriptionId: string): Promise<void> {
-	await db
+	const userId = await db
 		.update(users)
 		.set({ pro: false, stripeSubscriptionId: null })
-		.where(eq(users.stripeSubscriptionId, stripeSubscriptionId));
+		.where(eq(users.stripeSubscriptionId, stripeSubscriptionId))
+		.returning({
+			id: users.id
+		})
+		.then((rows) => {
+			return rows[0].id;
+		});
+
+	await db.update(websites).set({ paused: true }).where(eq(websites.userId, userId));
 }
