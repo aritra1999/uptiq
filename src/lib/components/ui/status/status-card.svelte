@@ -4,6 +4,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { Button } from '$lib/components/ui/button';
+	import { Badge } from '$lib/components/ui/badge';
 	import StatusBadge from '$lib/components/ui/status/status-badge.svelte';
 	import StatusPageChart from '$lib/components/ui/status/status-page-chart.svelte';
 	import StatusAvailability from '$lib/components/ui/status/status-availability.svelte';
@@ -11,6 +12,8 @@
 	import EllipsisVertical from 'lucide-svelte/icons/ellipsis-vertical';
 	import LoaderCircle from 'lucide-svelte/icons/loader-circle';
 	import { cn } from '$lib/utils';
+	import TriangleAlert from 'lucide-svelte/icons/triangle-alert';
+	import { toast } from 'svelte-sonner';
 
 	let {
 		classProps = '',
@@ -24,6 +27,33 @@
 	let statuses: SelectPartialStatus[] = $state([]);
 	let loadingStatuses = $state(true);
 	let website = $derived($websiteStore && websiteId ? $websiteStore.get(websiteId) : undefined);
+
+	async function togglePauseWebsite() {
+		if (website)
+			await fetch(`/api/websites/${websiteId}`, {
+				method: 'PUT',
+				body: JSON.stringify({ paused: !website.paused, name: website.name, url: website.url })
+			})
+				.then(async (res) => {
+					if (res.ok) {
+						websiteStore.update((websiteMap) => {
+							const updatedWebsite = { ...website, paused: !website.paused };
+							toast.success(
+								`Website ${updatedWebsite.paused ? 'paused' : 'resumed'} successfully!`
+							);
+							websiteMap.set(websiteId, updatedWebsite);
+							return websiteMap;
+						});
+					} else {
+						const resBody = await res.json();
+						toast.error(resBody.error);
+					}
+				})
+				.catch((err) => {
+					console.error(err);
+					toast.error('An error occurred. Please try again later.');
+				});
+	}
 
 	async function loadWebsiteStatus(websiteId: string) {
 		if (!websiteId) return;
@@ -45,10 +75,16 @@
 	<Card.Root class={cn(classProps, 'inline-block w-full p-4')}>
 		<div class="mb-4 flex items-center justify-between">
 			<div>
-				<h2 class="mr-2 text-lg font-medium">{website.name}</h2>
+				<h2 class="mr-2 text-lg font-medium">
+					{website.name}
+				</h2>
 			</div>
 			<div class="flex items-center space-x-4">
-				{#if statuses?.length > 0}
+				{#if website.paused}
+					<Badge variant="destructive">
+						<TriangleAlert class="mr-1 size-3" />Paused
+					</Badge>
+				{:else if statuses?.length > 0}
 					{@const latestStatus = statuses.at(-1)}
 					{#if latestStatus}
 						<StatusBadge status={latestStatus.status} />
@@ -67,9 +103,13 @@
 								onclick={() => {
 									showWebsiteFormDialog = true;
 									selectedWebsiteIdStore.set(websiteId);
-								}}>Edit</DropdownMenu.Item
+								}}
 							>
-							<DropdownMenu.Item disabled={true}>Pause (coming soon)</DropdownMenu.Item>
+								Edit
+							</DropdownMenu.Item>
+							<DropdownMenu.Item onclick={togglePauseWebsite}>
+								{website.paused ? 'Resume' : 'Pause'}
+							</DropdownMenu.Item>
 							<DropdownMenu.Item disabled={true}>Alerts (coming soon)</DropdownMenu.Item>
 							<DropdownMenu.Separator />
 							<DropdownMenu.Item

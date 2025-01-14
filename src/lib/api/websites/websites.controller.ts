@@ -3,6 +3,7 @@ import { Hono, type Context } from 'hono';
 import {
 	createWebsite,
 	deleteWebsite,
+	getActiveWebsiteCount,
 	getWebsite,
 	getWebsites,
 	getWebsitesForUser,
@@ -119,6 +120,7 @@ export const deleteWebsitesController = async (context: Context) => {
 };
 
 const PartialInsertWebsiteSchema = InsertWebsiteSchema.pick({
+	paused: true,
 	name: true,
 	url: true
 });

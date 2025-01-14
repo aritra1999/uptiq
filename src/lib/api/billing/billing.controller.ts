@@ -3,10 +3,10 @@ import { Hono, type Context } from 'hono';
 import { getUser } from '../user/user.service';
 import { getAllProjects } from '../projects/projects.service';
 import { MAX_PROJECTS_FREE, MAX_WEBSITES_PER_PROJECT_FREE } from '../costants';
-import { getWebsiteCount } from '../websites/websites.service';
 import { SECRET_STRIPE_WEBHOOK_KEY } from '$env/static/private';
 import { downgradeUserWithSubscription, upgrageUserPlan } from './billing.service';
 import { stripe } from '$lib/stripe/stripe';
+import { getActiveWebsiteCount } from '../websites/websites.service';
 
 export const billingRouter = new Hono();
 
@@ -30,7 +30,7 @@ export const downgradePlanController = async (context: Context) => {
 		);
 
 	for (const project of projects) {
-		const countOfWebsites = await getWebsiteCount(project.id);
+		const countOfWebsites = await getActiveWebsiteCount(project.id);
 		if (countOfWebsites > MAX_WEBSITES_PER_PROJECT_FREE) {
 			return context.json(
 				{

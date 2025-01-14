@@ -246,7 +246,7 @@ export type SelectAlertLog = typeof alertLogs.$inferSelect;
 // Partial Select types
 export type SelectWebsiteStatusCard = Pick<SelectWebsite, 'id' | 'name' | 'url'>;
 export type SelectProjectPartial = Pick<SelectProject, 'id' | 'slug' | 'name' | 'description'>;
-export type SelectWebsitePartial = Pick<SelectWebsite, 'id' | 'name' | 'url'>;
+export type SelectWebsitePartial = Pick<SelectWebsite, 'id' | 'name' | 'url' | 'paused'>;
 export type SelectPartialStatus = Pick<
 	SelectStatus,
 	'status' | 'responseTime' | 'statusCode' | 'createdAt'
